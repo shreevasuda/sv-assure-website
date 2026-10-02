@@ -356,7 +356,11 @@ nav.main a{white-space:nowrap}
       <div class="reveal">
         <h2>Send an Enquiry</h2>
         <p>Please complete the form below and we will get back to you shortly. Fields marked with an asterisk are required.</p>
-        <form id="enquiry" novalidate>
+        <form id="enquiry" method="POST">
+          <!-- Web3Forms: replace f0649f9a-f68c-4436-aee7-65fd59951b75 with the access key generated for shreevasudaventure@gmail.com -->
+          <input type="hidden" name="access_key" value="f0649f9a-f68c-4436-aee7-65fd59951b75">
+          <input type="hidden" name="subject" value="New Website Enquiry - SV Assure">
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
           <div class="f2">
             <div class="field"><label for="f-company">Institution or Company *</label>
               <input id="f-company" name="company" type="text" required autocomplete="organization"></div>
@@ -379,8 +383,8 @@ nav.main a{white-space:nowrap}
             <select id="f-service" name="service"><option>Contact point verification (CPV)</option><option>Pre-sanction / credit due diligence</option><option>Transaction &amp; investment due diligence</option><option>Supplier / third-party due diligence</option><option>TEV study</option><option>Cost and plant &amp; machinery verification</option><option>Stock, book-debt &amp; end-use monitoring</option><option>Process &amp; controls review</option><option>Empanelment / tender enquiry</option><option>Not sure yet &mdash; let&rsquo;s talk</option></select></div>
           <div class="field"><label for="f-msg">Tell Us About the Requirement *</label>
             <textarea id="f-msg" name="message" required placeholder="The type of verification, approximate monthly volume, locations, the turnaround you need and any prescribed report format."></textarea></div>
-          <button class="btn" type="submit">Send Enquiry</button>
-          <p class="small muted" id="f-status" style="margin-top:18px">This form opens your own email application with the message ready to send, so nothing is stored on this website. You can also write to us directly at <a href="mailto:contact@svassure.com">contact@svassure.com</a>.</p>
+          <button class="btn" id="f-submit" type="submit">Send Enquiry</button>
+          <p class="small muted" id="f-status" style="margin-top:18px" role="status" aria-live="polite">Your enquiry will be sent securely to our team. You can also write to us directly at <a href="mailto:contact@svassure.com">contact@svassure.com</a>.</p>
         </form>
       </div>
 
@@ -467,17 +471,67 @@ nav.main a{white-space:nowrap}
   document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
   var y=document.getElementById('yr'); if(y){y.textContent=new Date().getFullYear();}
   var f=document.getElementById('enquiry');
-  if(f){f.addEventListener('submit',function(ev){
+  if(f){f.addEventListener('submit',async function(ev){
     ev.preventDefault();
-    var g=function(i){var e=document.getElementById(i);return e?e.value.trim():'';};
-    var body=['Name: '+g('f-name'),'Institution / company: '+g('f-company'),'Designation: '+g('f-desig'),
-              'Email: '+g('f-email'),'Phone: '+g('f-phone'),'Requirement: '+g('f-service'),
-              'Locations: '+g('f-loc'),'','Message:',g('f-msg')].join('\n');
-    window.location.href='mailto:contact@svassure.com?subject='+
-      encodeURIComponent('Website enquiry - '+(g('f-company')||g('f-name')||'new enquiry'))+
-      '&body='+encodeURIComponent(body);
-    var s=document.getElementById('f-status');
-    if(s){s.textContent='Your email application should now open with the message ready to send. If nothing happens, please write to us directly at contact@svassure.com.';}
+
+    var status=document.getElementById('f-status');
+    var submit=document.getElementById('f-submit');
+    var accessKey=f.querySelector('input[name="access_key"]');
+
+    if(!accessKey || !accessKey.value || accessKey.value === 'f0649f9a-f68c-4436-aee7-65fd59951b75'){
+      if(status){
+        status.textContent='The enquiry form is not yet connected. Please contact us directly at contact@svassure.com.';
+        status.style.color='var(--gold-d)';
+      }
+      return;
+    }
+
+    if(!f.checkValidity()){
+      f.reportValidity();
+      return;
+    }
+
+    if(submit){
+      submit.disabled=true;
+      submit.textContent='Sending...';
+    }
+    if(status){
+      status.textContent='Please wait — sending your enquiry securely...';
+      status.style.color='';
+    }
+
+    try{
+      var formData=new FormData(f);
+      var response=await fetch('https://api.web3forms.com/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(Object.fromEntries(formData))
+      });
+      var result=await response.json();
+
+      if(response.ok && result.success){
+        f.reset();
+        if(status){
+          status.textContent='Thank you. Your enquiry has been sent successfully. Our team will get back to you shortly.';
+          status.style.color='var(--green)';
+        }
+      }else{
+        if(status){
+          status.textContent=(result && result.message) ? result.message : 'We could not send your enquiry. Please try again or email contact@svassure.com directly.';
+          status.style.color='var(--gold-d)';
+        }
+      }
+    }catch(error){
+      if(status){
+        status.textContent='We could not send your enquiry due to a connection issue. Please try again or email contact@svassure.com directly.';
+        status.style.color='var(--gold-d)';
+      }
+    }finally{
+      if(submit){
+        submit.disabled=false;
+        submit.textContent='Send Enquiry';
+      }
+    }
   });}
 })();
 </script>
