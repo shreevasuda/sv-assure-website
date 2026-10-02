@@ -357,9 +357,9 @@ nav.main a{white-space:nowrap}
         <h2>Send an Enquiry</h2>
         <p>Please complete the form below and we will get back to you shortly. Fields marked with an asterisk are required.</p>
         <form id="enquiry" method="POST">
-          <!-- Web3Forms: replace f0649f9a-f68c-4436-aee7-65fd59951b75 with the access key generated for shreevasudaventure@gmail.com -->
+          <!-- Web3Forms access key configured for SV Assure website enquiries -->
           <input type="hidden" name="access_key" value="f0649f9a-f68c-4436-aee7-65fd59951b75">
-          <input type="hidden" name="subject" value="New Website Enquiry - SV Assure">
+          <input type="hidden" name="subject" value="New Enquiry - SV Assure Website">
           <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
           <div class="f2">
             <div class="field"><label for="f-company">Institution or Company *</label>
@@ -478,7 +478,7 @@ nav.main a{white-space:nowrap}
     var submit=document.getElementById('f-submit');
     var accessKey=f.querySelector('input[name="access_key"]');
 
-    if(!accessKey || !accessKey.value || accessKey.value === 'f0649f9a-f68c-4436-aee7-65fd59951b75'){
+    if(!accessKey || !accessKey.value){
       if(status){
         status.textContent='The enquiry form is not yet connected. Please contact us directly at contact@svassure.com.';
         status.style.color='var(--gold-d)';
