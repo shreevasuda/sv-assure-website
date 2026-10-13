@@ -1,0 +1,23 @@
+name = "svassure-report-portal-api"
+main = "src/index.js"
+compatibility_date = "2026-10-13"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "svassure-portal"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "REPORTS_BUCKET"
+bucket_name = "svassure-reports"
+
+[vars]
+PUBLIC_SITE_URL = "https://svassure.com"
+NOTIFY_EMAIL = "contact@svassure.com"
+# Set MAIL_FROM to a sender verified in Resend before enabling email.
+MAIL_FROM = "SV Assure <notifications@svassure.com>"
+
+# Add secrets separately; never commit secret values:
+# npx wrangler secret put RESEND_API_KEY
+# npx wrangler secret put ADMIN_TOKEN
