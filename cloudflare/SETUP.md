@@ -12,6 +12,8 @@ This is a staged implementation on `feature/report-ordering-portal`. It is not d
 
 Create the D1 database `svassure-portal` and apply `cloudflare/schema.sql` with Wrangler or the D1 console. Configure Resend sender/domain verification before testing email.
 
+Admin dashboard: `/order-report/admin/` (requires the `ADMIN_TOKEN` secret). Banker portal: `/order-report/my-orders/` after email verification.
+
 ## Implemented in this branch
 - Public requisition capture with D1 insert and optional email notification.
 - Banker one-time email sign-in links (15-minute, single-use), HttpOnly/Secure session cookie, and own-order listing.
