@@ -1,38 +1,49 @@
-# SV Assure report portal — Cloudflare setup and release checklist
+# SV Assure report portal — staged Cloudflare setup
 
-This is a staged implementation on `feature/report-ordering-portal`. It is not deployed or production-ready until the bindings, secrets, schema, tests, and access controls below are completed. The current live website is unchanged.
+The portal is being prepared as a separate API Worker so the existing static-assets-only production Worker for `svassure.com` does not need to be reconfigured. This is not production-ready until deployed and tested. Do not use real borrower information yet.
 
-## Cloudflare Pages bindings
-- D1 binding `DB` → database `svassure-portal`.
-- R2 binding `REPORTS_BUCKET` → a **private** bucket for report PDFs (do not enable public access or custom domain).
-- Secret `RESEND_API_KEY` → Resend API key.
-- Variable `NOTIFY_EMAIL` → `contact@svassure.com`.
-- Variable `MAIL_FROM` → verified sender, e.g. `SV Assure <notifications@svassure.com>`.
-- Secret `ADMIN_TOKEN` → generate a long random secret (at least 32 random bytes). This is used by the admin page/API; never commit it or share it with bankers.
+## Existing resources
+- D1 database: `svassure-portal`
+- Private R2 bucket: `svassure-reports` (keep Public Access disabled)
+- Existing website: `svassure.com`
+- API Worker name: `svassure-report-portal-api`
 
-Create the D1 database `svassure-portal` and apply `cloudflare/schema.sql` with Wrangler or the D1 console. Configure Resend sender/domain verification before testing email.
+## Separate API Worker
+The router is in `portal-worker/src/index.js`. Its example config is `portal-worker/wrangler.toml.example`.
+1. Obtain the D1 database ID from Cloudflare D1 > `svassure-portal` > Settings/Overview.
+2. Copy the example file to `portal-worker/wrangler.toml` locally and replace `REPLACE_WITH_D1_DATABASE_ID`. Do not commit the real config if it contains account-specific identifiers.
+3. From the repository root, install/use Wrangler and deploy the dedicated Worker with `npx wrangler deploy --config portal-worker/wrangler.toml`.
+4. Configure secrets interactively from the `portal-worker` directory (or pass the config path): `RESEND_API_KEY` and `ADMIN_TOKEN`. Never put secret values in GitHub or source files. Use a long random admin token (at least 32 random bytes).
+5. Verify the sender domain/address in Resend. Set `MAIL_FROM` to that verified sender; set `NOTIFY_EMAIL=contact@svassure.com` and `PUBLIC_SITE_URL=https://svassure.com`.
+6. Keep the R2 bucket private: no public development URL, no custom public domain.
 
-Admin dashboard: `/order-report/admin/` (requires the `ADMIN_TOKEN` secret). Banker portal: `/order-report/my-orders/` after email verification.
+The Worker API uses an exact-origin allowlist from `PUBLIC_SITE_URL` and CORS with credentials for the website. It is intended to be tested first on the Worker-provided `workers.dev` URL. Once deployed, the API base URL must be configured in `order-report/api-config.js` (or its meta/config equivalent) and committed to the feature branch before frontend integration testing. Do not guess this URL.
 
-## Implemented in this branch
-- Public requisition capture with D1 insert and optional email notification.
-- Banker one-time email sign-in links (15-minute, single-use), HttpOnly/Secure session cookie, and own-order listing.
-- Admin-token-protected order listing/status changes and PDF upload.
-- PDF reports stored in private R2 and downloads checked against the verified ordering email or admin token.
-- No public report directory or public R2 endpoint.
+## API routes
+- `POST /api/orders`
+- `POST /api/auth/request`
+- `POST /api/auth/verify`
+- `GET|DELETE /api/auth/me`
+- `GET /api/my-orders`
+- `GET|PATCH /api/admin/orders`
+- `GET /api/admin/export`
+- `GET|POST /api/reports`
 
-## Important security / operational notes
-- Use only dummy data during testing. The admin token must be entered only on the private admin screen; do not store it in browser local storage or share it.
-- Restrict access to `/order-report/admin/` at Cloudflare Access as an additional layer if available.
-- Review applicable privacy/consent, retention, audit-log, and incident-response requirements before handling real borrower data.
-- Banker access is currently tied to the email captured on the requisition. An email owner who can verify that address can access orders associated with it; validate institutional policy before production.
-- Email sign-in, D1 inserts, and report upload/download require configured Cloudflare bindings/secrets. No code-only change can configure the user's Cloudflare account.
-- Reports are uploaded through an authenticated admin API and never written into GitHub/public assets.
+## Database schema
+The verified database currently contains `orders`, `auth_tokens`, and `sessions`. The checked-in `cloudflare/schema.sql` is aligned to those structures. Do not run destructive SQL against any database containing data.
 
-## Test before release
-1. Deploy this branch only as a Pages preview.
-2. Submit a dummy requisition and confirm a D1 row plus notification email.
-3. Request a banker sign-in link; verify expiry, single-use behaviour, and that only matching email orders appear.
-4. Upload a dummy PDF from the admin page; verify an unauthenticated user cannot download it and a different banker receives 403.
-5. Check mobile layout, error paths, duplicate submits, logs, and email deliverability.
-6. Review the full diff and only then merge/deploy. Do not use real borrower data until tests and institutional approvals are complete.
+## Test checklist before production
+1. Deploy the API Worker separately; verify unknown routes return 404 and no secrets are exposed.
+2. Configure Resend and verify a dummy sign-in email goes to the requested address; check token expiry and single-use behavior.
+3. Submit a dummy requisition and confirm the row plus notification email.
+4. Verify banker sees only orders associated with their verified email.
+5. Upload a dummy PDF; verify unauthenticated access is denied and a different banker receives 403.
+6. Check admin token handling, status changes, CSV export, mobile layout, errors, logs, and duplicate submissions.
+7. Confirm existing website still works. Do not merge the portal branch or route production traffic until tests and institutional/privacy approvals are complete.
+
+## Important notes
+- Do not put reports, borrower information, secrets, or admin tokens in GitHub or public website assets.
+- Admin token is supplied by a header and held in the admin page's memory only.
+- Banker access is tied to the verified email entered on the requisition; confirm this access model is acceptable under institutional policy.
+- Configure rate limiting/abuse protection at the edge before production. Per-email magic-link throttling is present but is not a substitute for edge controls.
+- Review consent language, retention, audit logging, and incident response before handling real borrower data.
