@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0B5CA5">
+<title>Order a Report | SV Assure</title>
+<meta name="description" content="Order an MSME due diligence report from SV Assure. For banks, NBFCs and financial institutions.">
+<link rel="icon" href="../assets/mark.png">
+<link rel="stylesheet" href="./portal.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/" aria-label="SV Assure home"><img src="../assets/logo-h.png" alt="SV Assure"></a>
+  <nav><a href="/">Home</a><a href="/services.html">Services</a><a class="nav-cta" href="/order-report/">Order a Report</a></nav>
+</header>
+<main>
+  <section class="intro">
+    <p class="eyebrow">FOR BANKS, NBFCs &amp; FINANCIAL INSTITUTIONS</p>
+    <h1>Order a Due Diligence Report</h1>
+    <p>Choose the most convenient way to place a report request with SV Assure.</p>
+  </section>
+  <section class="options" aria-label="Ordering options">
+    <a class="option featured" href="#order-form">
+      <span class="option-icon" aria-hidden="true">↗</span><span class="option-title">Order Without Login</span>
+      <span class="option-copy">Submit a short requisition. No account is required.</span><span class="option-link">Start requisition →</span>
+    </a>
+    <a class="option" href="#banker-login">
+      <span class="option-icon" aria-hidden="true">✉</span><span class="option-title">Banker Login</span>
+      <span class="option-copy">Sign in by email link to track orders and access reports authorised for you.</span><span class="option-link">Sign in / register →</span>
+    </a>
+    <a class="option" href="https://wa.me/919974165193?text=Hello%20SV%20Assure%2C%20I%20would%20like%20to%20order%20a%20Tier-3%20MSME%20Due%20Diligence%20Report.%20Please%20guide%20me%20on%20the%20details%20required." target="_blank" rel="noopener">
+      <span class="option-icon" aria-hidden="true">◉</span><span class="option-title">Order on WhatsApp</span>
+      <span class="option-copy">Start a conversation with SV Assure using our official WhatsApp number.</span><span class="option-link">Continue on WhatsApp →</span>
+    </a>
+  </section>
+  <section class="form-layout" id="order-form">
+    <div class="form-card">
+      <div class="section-heading"><span class="step">1</span><div><h2>Report requisition</h2><p>Fields marked * are mandatory.</p></div></div>
+      <form id="requisition-form">
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <h3>Report required</h3>
+        <label>Report type *<select name="reportType" required><option value="Tier-3 MSME Due Diligence Report">Tier-3 MSME Due Diligence Report</option></select></label>
+        <h3>Borrower details</h3>
+        <div class="fields">
+          <label>Borrower / company name *<input name="borrowerName" required maxlength="200" autocomplete="organization"></label>
+          <label>Borrower mobile number *<input name="borrowerMobile" required inputmode="tel" maxlength="16" placeholder="10-digit mobile number"></label>
+          <label>GSTIN (optional)<input name="gstin" maxlength="15" autocapitalize="characters"></label>
+          <label>Business location (optional)<input name="location" maxlength="180" placeholder="City, State"></label>
+        </div>
+        <h3>Ordering banker</h3>
+        <div class="fields">
+          <label>Your name *<input name="bankerName" required maxlength="120" autocomplete="name"></label>
+          <label>Designation *<input name="designation" required maxlength="120" placeholder="e.g. Branch Manager"></label>
+          <label>Bank / institution *<input name="bankName" required maxlength="160" autocomplete="organization"></label>
+          <label>Branch / office (optional)<input name="branch" maxlength="160"></label>
+          <label>Contact number *<input name="bankerMobile" required inputmode="tel" maxlength="16" autocomplete="tel"></label>
+          <label>Official email *<input name="bankerEmail" type="email" required maxlength="200" autocomplete="email"></label>
+        </div>
+        <label>Additional instructions (optional)<textarea name="remarks" maxlength="1500" rows="3"></textarea></label>
+        <label class="consent"><input type="checkbox" name="consent" required><span>I confirm that the borrower has been informed and has consented to verification of the details submitted for credit-appraisal purposes. *</span></label>
+        <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+        <button class="button primary" id="submit-button" type="submit">Submit requisition</button>
+        <span class="subtext">No sign-up needed.</span>
+      </form>
+      <div id="success-panel" class="success-panel" hidden><span class="success-mark">✓</span><h2>Requisition received</h2><p>Your reference number is:</p><strong id="reference-number"></strong><p>SV Assure will review your request and contact you. Please retain the reference number.</p><a href="#order-form" class="button secondary" id="new-order">Place another order</a></div>
+    </div>
+    <aside class="side-card">
+      <h2>What you can expect</h2>
+      <ul><li>Clear case allocation and review</li><li>Verification scope suited to the requisition</li><li>Independent checks and documented findings</li><li>Report in your bank's prescribed format, where agreed</li><li>Private report access for the authorised banker</li></ul>
+      <div class="login-box" id="banker-login"><h3>Ordering regularly?</h3><p>Banker sign-in with a secure email link will let you view your requisitions and access reports authorised for your account.</p><form id="login-form"><label>Official email address<input type="email" name="email" required placeholder="name@bank.com"></label><button class="button secondary" type="submit">Email me a sign-in link</button><p id="login-message" class="form-message" role="status" aria-live="polite"></p></form><p class="subtext">Email sign-in will be activated after the portal backend is configured.</p></div>
+    </aside>
+  </section>
+</main>
+<footer><img src="../assets/logo-h-white.png" alt="SV Assure"><p>Know Better. Decide Better.</p><span>A Unit of Shree Vasuda Venture Private Limited</span><a href="mailto:contact@svassure.com">contact@svassure.com</a></footer>
+<script src="./portal.js" defer></script>
+</body></html>
