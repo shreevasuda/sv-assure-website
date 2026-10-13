@@ -1,24 +1,7 @@
 (function(){
 const form=document.getElementById('requisition-form'),msg=document.getElementById('form-message'),btn=document.getElementById('submit-button'),success=document.getElementById('success-panel'),ref=document.getElementById('reference-number'),login=document.getElementById('login-form'),loginMsg=document.getElementById('login-message');
 const phoneValid=v=>{const d=(v||'').replace(/\D/g,'');return d.length>=10&&d.length<=13};
-form.addEventListener('submit',async e=>{
- e.preventDefault();msg.className='form-message';msg.textContent='';
- if(form.elements.website.value)return;
- const d=Object.fromEntries(new FormData(form).entries());
- if(!phoneValid(d.borrowerMobile)||!phoneValid(d.bankerMobile)){msg.classList.add('error');msg.textContent='Please enter valid mobile numbers for the borrower and ordering banker.';return;}
- if(!d.consent){msg.classList.add('error');msg.textContent='Please confirm borrower consent before submitting.';return;}
- btn.disabled=true;btn.textContent='Submitting…';
- try{
-  const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
-  const data=await res.json();
-  if(!res.ok)throw new Error(data.error||'We could not submit the requisition. Please try again or contact us on WhatsApp.');
-  ref.textContent=data.reference;form.hidden=true;success.hidden=false;success.scrollIntoView({behavior:'smooth',block:'center'});
- }catch(err){msg.classList.add('error');msg.textContent=err.message||'Submission failed. Please try again.';}
- finally{btn.disabled=false;btn.textContent='Submit requisition';}
-});
-login.addEventListener('submit',async e=>{
- e.preventDefault();loginMsg.className='form-message';loginMsg.textContent='';
- loginMsg.textContent='Email-link sign-in will be activated after Cloudflare authentication and email delivery are configured. For now, please use Order Without Login or WhatsApp.';
-});
+form.addEventListener('submit',async e=>{e.preventDefault();msg.className='form-message';msg.textContent='';if(form.elements.website.value)return;const d=Object.fromEntries(new FormData(form).entries());if(!phoneValid(d.borrowerMobile)||!phoneValid(d.bankerMobile)){msg.classList.add('error');msg.textContent='Please enter valid mobile numbers for the borrower and ordering banker.';return;}if(!d.consent){msg.classList.add('error');msg.textContent='Please confirm borrower consent before submitting.';return;}btn.disabled=true;btn.textContent='Submitting…';try{const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});const data=await res.json();if(!res.ok)throw new Error(data.error||'We could not submit the requisition. Please try again or contact us on WhatsApp.');ref.textContent=data.reference;form.hidden=true;success.hidden=false;success.scrollIntoView({behavior:'smooth',block:'center'});}catch(err){msg.classList.add('error');msg.textContent=err.message||'Submission failed. Please try again.';}finally{btn.disabled=false;btn.textContent='Submit requisition';}});
+login.addEventListener('submit',async e=>{e.preventDefault();loginMsg.className='form-message';loginMsg.textContent='Sending secure sign-in link…';const email=login.elements.email.value.trim();try{const r=await fetch('/api/auth/request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});const d=await r.json();if(!r.ok)throw Error(d.error||'Unable to send link');loginMsg.textContent=d.message||'Check your inbox for a sign-in link.';}catch(err){loginMsg.classList.add('error');loginMsg.textContent=err.message||'Unable to send link.';}});
 document.getElementById('new-order').addEventListener('click',()=>{form.reset();form.hidden=false;success.hidden=true;msg.textContent='';});
 })();
