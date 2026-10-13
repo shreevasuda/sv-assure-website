@@ -14,7 +14,6 @@ export async function onRequestPost({request,env}){
   const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
   const tokenHash=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("");
   await env.DB.prepare("DELETE FROM auth_tokens WHERE expires_at < datetime('now')").run();
-  await env.DB.prepare("DELETE FROM auth_tokens WHERE email=?").bind(email).run();
   await env.DB.prepare("INSERT INTO auth_tokens(email,token_hash,expires_at,created_at) VALUES(?,?,datetime('now','+15 minutes'),datetime('now'))").bind(email,tokenHash).run();
   const link=new URL("/order-report/verify/",request.url);link.searchParams.set("token",raw);
   const sent=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":"Bearer "+env.RESEND_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({from:env.MAIL_FROM,to:[email],subject:"Your SV Assure secure sign-in link",html:"<p>A sign-in link was requested for SV Assure Report Portal.</p><p><a href=\""+link.href+"\">Sign in securely</a></p><p>This link expires in 15 minutes and can be used only once. If you did not request it, ignore this email.</p>"})});
