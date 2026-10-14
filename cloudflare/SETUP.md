@@ -17,7 +17,7 @@ The router is in `portal-worker/src/index.js`. Its example config is `portal-wor
 5. Verify the sender domain/address in Resend. Set `MAIL_FROM` to that verified sender; set `NOTIFY_EMAIL=contact@svassure.com` and `PUBLIC_SITE_URL=https://svassure.com`.
 6. Keep the R2 bucket private: no public development URL, no custom public domain.
 
-The Worker API uses an exact-origin allowlist from `PUBLIC_SITE_URL` and CORS with credentials for the website. It is intended to be tested first on the Worker-provided `workers.dev` URL. Once deployed, configure `order-report/api-config.js` with the actual API Worker URL for preview testing. Do not guess this URL.
+The Worker API uses an exact-origin allowlist from `PUBLIC_SITE_URL` and CORS with credentials for the website. Before browser sign-in testing, attach the custom domain `portal-api.svassure.com` to the dedicated Worker and verify HTTPS. The portal frontend defaults to `https://portal-api.svassure.com`. Prefer this same-site subdomain over the `workers.dev` hostname because browser third-party-cookie restrictions can prevent session cookies from working reliably across sites. Do not route the apex `svassure.com` or `www` hostname to this API Worker.
 
 ## API routes
 - `POST /api/orders`
@@ -33,7 +33,7 @@ The Worker API uses an exact-origin allowlist from `PUBLIC_SITE_URL` and CORS wi
 The verified database currently contains `orders`, `auth_tokens`, and `sessions`. The checked-in `cloudflare/schema.sql` is aligned to those structures. Do not run destructive SQL against any database containing data.
 
 ## Test checklist before production
-1. Deploy the API Worker separately; verify unknown routes return 404 and no secrets are exposed.
+1. Deploy the API Worker separately and attach `portal-api.svassure.com` as its custom domain; verify unknown routes return 404 and no secrets are exposed.
 2. Configure Resend and verify a dummy sign-in email goes to the requested address; check token expiry and single-use behavior.
 3. Submit a dummy requisition and confirm the row plus notification email.
 4. Verify banker sees only orders associated with their verified email.
