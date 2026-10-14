@@ -18,22 +18,35 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate required deployment secrets
+      - name: Validate deployment secrets
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || (echo "::error::Add the CLOUDFLARE_API_TOKEN repository secret." && exit 1)
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "::error::Add the CLOUDFLARE_ACCOUNT_ID repository secret." && exit 1)
-          test -n "$D1_DATABASE_ID" || (echo "::error::Add the D1_DATABASE_ID repository secret." && exit 1)
-          case "$D1_DATABASE_ID" in
-            *[!a-fA-F0-9-]*|"") echo "::error::D1_DATABASE_ID must be the database UUID from Cloudflare." && exit 1 ;;
-          esac
+
+      - name: Resolve D1 database UUID from Cloudflare
+        id: d1
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database?per_page=100")"
+          echo "$response" | jq -e '.success == true' >/dev/null
+          db_id="$(echo "$response" | jq -r '[.result[] | select(.name == "svassure-portal")] | if length == 1 then .[0].uuid else empty end')"
+          if ! printf '%s' "$db_id" | grep -Eq '^[a-fA-F0-9-]{36}$'; then
+            echo "::error::Could not resolve the UUID for D1 database svassure-portal. Check that the Cloudflare API token has D1 Read permission and that the database exists in this account."
+            exit 1
+          fi
+          echo "database_id=$db_id" >> "$GITHUB_OUTPUT"
 
       - name: Inject D1 ID into ephemeral deployment config
         env:
-          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          D1_DATABASE_ID: ${{ steps.d1.outputs.database_id }}
         run: |
           sed -i "s/REPLACE_WITH_D1_DATABASE_ID/$D1_DATABASE_ID/" portal-worker/wrangler.toml
           ! grep -q "REPLACE_WITH_D1_DATABASE_ID" portal-worker/wrangler.toml
