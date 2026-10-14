@@ -3,10 +3,18 @@ main = "src/index.js"
 compatibility_date = "2026-10-13"
 workers_dev = true
 
+[[d1_databases]]
+binding = "DB"
+database_name = "svassure-portal"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "REPORTS_BUCKET"
+bucket_name = "svassure-private-reports"
+
 [vars]
 PUBLIC_SITE_URL = "https://svassure.com"
 NOTIFY_EMAIL = "contact@svassure.com"
-MAIL_FROM = "SV Assure <notifications@svassure.com>"
+MAIL_FROM = "SV Assure Reports <contact@svassure.com>"
 
-# Add D1 binding DB and R2 binding REPORTS_BUCKET in the Worker dashboard before functional tests.
-# Add RESEND_API_KEY and ADMIN_TOKEN as secrets in the Worker dashboard.
+# Secrets are configured separately in Cloudflare; never commit their values.
