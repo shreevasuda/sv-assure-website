@@ -8,6 +8,7 @@ export async function onRequestPost({request,env}){
   const body=await request.json(),email=clean(body.email);
   if(!validEmail(email)||email.length>200)return json({error:"Enter a valid official email address."},400);
   // Count every request, not only unconsumed tokens, so successful sign-ins cannot reset the per-email limit.
+  await env.DB.prepare("DELETE FROM auth_request_log WHERE created_at < datetime('now','-30 days')").run();
   await env.DB.prepare("INSERT INTO auth_request_log(email,created_at) VALUES(?,datetime('now'))").bind(email).run();
   const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM auth_request_log WHERE email=? AND created_at > datetime('now','-15 minutes')").bind(email).first();
   if(Number(recent?.n||0)>3)return json({ok:true,message:"If the address can receive portal access links, an email has been sent. Check your inbox."});
