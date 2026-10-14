@@ -4,7 +4,7 @@ The portal is being prepared as a separate API Worker so the existing static-ass
 
 ## Existing resources
 - D1 database: `svassure-portal`
-- Private R2 bucket: `svassure-reports` (keep Public Access disabled)
+- Private R2 bucket: `svassure-private-reports` (keep Public Access disabled)
 - Existing website: `svassure.com`
 - API Worker name: `svassure-report-portal-api`
 
@@ -17,7 +17,7 @@ The router is in `portal-worker/src/index.js`. Its example config is `portal-wor
 5. Verify the sender domain/address in Resend. Set `MAIL_FROM` to that verified sender; set `NOTIFY_EMAIL=contact@svassure.com` and `PUBLIC_SITE_URL=https://svassure.com`.
 6. Keep the R2 bucket private: no public development URL, no custom public domain.
 
-The Worker API uses an exact-origin allowlist from `PUBLIC_SITE_URL` and CORS with credentials for the website. It is intended to be tested first on the Worker-provided `workers.dev` URL. Once deployed, the API base URL must be configured in `order-report/api-config.js` (or its meta/config equivalent) and committed to the feature branch before frontend integration testing. Do not guess this URL.
+The Worker API uses an exact-origin allowlist from `PUBLIC_SITE_URL` and CORS with credentials for the website. It is intended to be tested first on the Worker-provided `workers.dev` URL. Once deployed, configure `order-report/api-config.js` with the actual API Worker URL for preview testing. Do not guess this URL.
 
 ## API routes
 - `POST /api/orders`
@@ -39,7 +39,7 @@ The verified database currently contains `orders`, `auth_tokens`, and `sessions`
 4. Verify banker sees only orders associated with their verified email.
 5. Upload a dummy PDF; verify unauthenticated access is denied and a different banker receives 403.
 6. Check admin token handling, status changes, CSV export, mobile layout, errors, logs, and duplicate submissions.
-7. Confirm existing website still works. Do not merge the portal branch or route production traffic until tests and institutional/privacy approvals are complete.
+7. Confirm existing website still works. Do not route production traffic or handle real borrower data until tests and institutional/privacy approvals are complete.
 
 ## Important notes
 - Do not put reports, borrower information, secrets, or admin tokens in GitHub or public website assets.
