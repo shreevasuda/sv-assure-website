@@ -7,9 +7,10 @@ export async function onRequestPost({request,env}){
   const origin=request.headers.get("Origin");if(origin&&new URL(origin).origin!==new URL(request.url).origin)return json({error:"Request origin not allowed."},403);
   const body=await request.json(),email=clean(body.email);
   if(!validEmail(email)||email.length>200)return json({error:"Enter a valid official email address."},400);
-  // Limit magic-link requests per address; configure Cloudflare edge rate limiting as an additional control before production.
-  const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM auth_tokens WHERE email=? AND created_at > datetime('now','-15 minutes')").bind(email).first();
-  if(Number(recent?.n||0)>=3)return json({ok:true,message:"If the address can receive portal access links, an email has been sent. Check your inbox."});
+  // Count every request, not only unconsumed tokens, so successful sign-ins cannot reset the per-email limit.
+  await env.DB.prepare("INSERT INTO auth_request_log(email,created_at) VALUES(?,datetime('now'))").bind(email).run();
+  const recent=await env.DB.prepare("SELECT COUNT(*) AS n FROM auth_request_log WHERE email=? AND created_at > datetime('now','-15 minutes')").bind(email).first();
+  if(Number(recent?.n||0)>3)return json({ok:true,message:"If the address can receive portal access links, an email has been sent. Check your inbox."});
   const raw=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,"0")).join("");
   const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
   const tokenHash=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,"0")).join("");
