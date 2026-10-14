@@ -3,7 +3,8 @@
 The portal is being prepared as a separate API Worker so the existing static-assets-only production Worker for `svassure.com` does not need to be reconfigured. This is not production-ready until deployed and tested. Do not use real borrower information yet.
 
 ## Existing resources
-- D1 database: `svassure-portal`
+- D1 database: `svassure-portal` (binding name `DB`).
+- The schema includes `auth_request_log` so the per-email magic-link limit persists after tokens are consumed. If the database was initialized before this table was added, apply the additive table/index SQL at the end of `cloudflare/schema.sql` before testing sign-in.
 - Private R2 bucket: `svassure-private-reports` (keep Public Access disabled)
 - Existing website: `svassure.com`
 - API Worker name: `svassure-report-portal-api`
