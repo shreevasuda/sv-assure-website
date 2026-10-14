@@ -43,7 +43,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 execute svassure-portal --remote --file=cloudflare/schema.sql
+          command: d1 execute svassure-portal --remote --file=cloudflare/schema.sql --config=portal-worker/wrangler.toml
           workingDirectory: .
 
       - name: Deploy API Worker
@@ -51,5 +51,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --config portal-worker/wrangler.toml
+          command: deploy --config=portal-worker/wrangler.toml
           workingDirectory: .
