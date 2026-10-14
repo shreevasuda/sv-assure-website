@@ -46,3 +46,12 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 CREATE INDEX IF NOT EXISTS idx_sessions_email ON sessions(email);
 CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expires_at);
+
+
+-- Persistent rate-limit history for magic-link requests; tokens being consumed must not reset throttling.
+CREATE TABLE IF NOT EXISTS auth_request_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_auth_request_log_email_created ON auth_request_log(email, created_at);
