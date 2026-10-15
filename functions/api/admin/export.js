@@ -1,4 +1,4 @@
-import {isAdmin,json} from "./_auth.js";
+import {isAdmin,json} from "../_auth.js";
 const csv=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
 export async function onRequestGet({request,env}){
  if(!isAdmin(request,env))return json({error:"Admin access denied."},401);
