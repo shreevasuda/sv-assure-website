@@ -50,3 +50,15 @@ The report portal is deployed as a separate API Worker. The existing static webs
 - Banker access is tied to the verified email entered on the requisition; confirm this access model is acceptable under institutional policy.
 - Per-email magic-link throttling is not a substitute for edge-level abuse protection.
 - Review consent language, retention, audit logging, and incident response before handling real borrower data.
+
+## Phase 1 changes (October 2026)
+- **New tables** `order_confirmations` and `order_events` are added to `cloudflare/schema.sql` (all `CREATE TABLE IF NOT EXISTS`, so the existing deploy workflow applies them safely and nothing existing is altered).
+- **Orders** require the borrower-consent tick; the banker's authority to engage SV Assure is stated in small print and confirmed by submitting the form. The exact wording and version are stored per order (`order_confirmations`); the wording lives in `functions/api/_auth.js`. Have counsel review it before real use and bump the version string when it changes.
+- **Optional checks** (residence / unit / security visit, supplier verification, cost vetting) can be ticked on the form; they are added to the order's notes. Scope is confirmed with the banker by phone.
+- **Status trail**: every order, whichever channel, gets events in `order_events`. Admin can log WhatsApp / phone / email orders (`POST /api/admin/orders`, shown on the admin page) and view the trail (`GET /api/admin/events`).
+- **Emails**: the banker now also gets a confirmation email with the reference.
+- **Spam protection (optional until configured)**: create a Cloudflare Turnstile widget. Put the *site key* (public) in `<meta name="sv-assure-turnstile-sitekey">` in `order-report/index.html` and add the *secret key* as Worker secret `TURNSTILE_SECRET`. Until the secret exists the check is skipped.
+- **Security fixes**: constant-time admin-token check, sign-out now deletes the server-side session, sessions last 14 days and expired ones are purged, `SameSite=Lax` cookies (site and API are same-site), PDF uploads must start with `%PDF-`, CSV export is protected against spreadsheet formula injection, downloads are logged, per-email and overall order rate limits, `workers_dev` turned off.
+- **Admin page** previously called `/api/...` on the website host; it now calls the API host like the rest of the portal.
+- **Tests**: `node --test tests/api.test.mjs` (Node 22+; in-memory SQLite, dummy data only).
+- **Not yet done**: put the admin page and `/api/admin/*` behind Cloudflare Access (named staff instead of one shared token); Razorpay payment links; WhatsApp automation.

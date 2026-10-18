@@ -1,1 +1,117 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>My requisitions | SV Assure</title><link rel="stylesheet" href="../portal.css"><style>.orders{max-width:1000px;margin:0 auto;padding:24px}.order{background:#fff;border:1px solid #dbe4ed;border-radius:12px;padding:16px;margin:12px 0}.order h2{font-size:18px;margin:0 0 8px}.muted{color:#617386}.status{display:inline-block;background:#eaf3fb;padding:5px 9px;border-radius:20px;font-size:13px}</style></head><body><header class="site-header"><a class="brand" href="/"><img src="../../assets/logo-h.png" alt="SV Assure"></a><nav><a href="/order-report/">Order a Report</a></nav></header><main class="orders"><p class="eyebrow">BANKER PORTAL</p><h1>My requisitions</h1><p id="message" role="status">Loading your requisitions…</p><div id="orders"></div><p><button id="signout" class="button">Sign out</button></p></main><script src="../api-config.js"></script><script>(async()=>{const msg=document.getElementById('message'),list=document.getElementById('orders');try{const r=await window.svaApi('/api/my-orders');const d=await r.json();if(!r.ok)throw Error(d.error||'Please sign in');msg.textContent='Showing requisitions for your verified email address.';for(const o of d.orders){const card=document.createElement('section');card.className='order';const h=document.createElement('h2');h.textContent=o.reference+' — '+o.borrower_name;card.appendChild(h);const p=document.createElement('p');p.className='muted';p.textContent=o.report_type+' · Submitted '+o.created_at;card.appendChild(p);const s=document.createElement('span');s.className='status';s.textContent=o.status;card.appendChild(s);if(o.report_available){const a=document.createElement('a');a.href=(window.SVA_API_BASE||'')+'/api/reports?id='+encodeURIComponent(o.id);a.textContent='Download authorised report';a.style.marginLeft='14px';card.appendChild(a)}list.appendChild(card)}if(!d.orders.length)msg.textContent='No requisitions are linked to this email address yet.'}catch(e){msg.textContent=e.message+' — return to the portal and request a secure sign-in link.'}})();document.getElementById('signout').onclick=async()=>{await window.svaApi('/api/auth/me',{method:'DELETE'});location.href='/order-report/'};</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0B5CA5">
+<title>My requisitions | SV Assure</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/order-report/portal.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg><a href="mailto:contact@svassure.com">contact@svassure.com</a></span>
+    <span class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>PAN India operations</span>
+  </div>
+</div>
+<header class="site">
+  <div class="head-in">
+    <a class="brand" href="/"><img src="/assets/logo-h.png" alt="SV Assure &ndash; Due Diligence"></a>
+    <button class="burger" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <nav class="main"><a href="/">Home</a><a href="/about.html">Who We Are</a><a href="/services.html">Services</a><a href="/how-we-work.html">How We Work</a><a href="/institutions.html">For Institutions</a><a href="/contact.html">Contact Us</a><a class="btn btn-gold" href="/order-report/">Order a Report</a></nav>
+  </div>
+</header>
+<main>
+<div class="page-narrow">
+  <p class="eyebrow" style="color:var(--gold-d)">Banker portal</p>
+  <h1>My requisitions</h1>
+  <p id="message" role="status" class="muted">Loading your requisitions&hellip;</p>
+  <div id="orders"></div>
+  <p style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap">
+    <a class="btn btn-gold" href="/order-report/#order-form">Place a new requisition</a>
+    <button id="signout" class="btn btn-outline" type="button">Sign out</button>
+  </p>
+</div>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <img class="flogo" src="/assets/logo-h-white.png" alt="SV Assure">
+        <p style="margin:0 0 12px">Know Better. Decide Better.</p>
+        <p style="margin:0">A Unit of Shree Vasuda Venture Private Limited</p>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">Who We Are</a></li>
+          <li><a href="/services.html">Services</a></li>
+          <li><a href="/order-report/">Order a Report</a></li>
+          <li><a href="/how-we-work.html">How We Work</a></li>
+          <li><a href="/institutions.html">For Institutions</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="/services.html#cpv">Contact Point Verification</a></li>
+          <li><a href="/services.html#credit">Credit Due Diligence</a></li>
+          <li><a href="/services.html#transaction">Transaction Due Diligence</a></li>
+          <li><a href="/services.html#supplier">Supplier Due Diligence</a></li>
+          <li><a href="/services.html#tev">TEV Studies</a></li>
+          <li><a href="/services.html#cost">Cost &amp; Asset Verification</a></li>
+          <li><a href="/services.html#stock">Stock, Book-Debt &amp; End-Use Monitoring</a></li>
+          <li><a href="/services.html#process">Process &amp; Controls Reviews</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Head Office</h5>
+        <p style="margin:0 0 14px">2218, Solus Building, Hiranandani Estate,<br>Opp. Bayer House, Thane (W),<br>Mumbai, Maharashtra &ndash; 400 607</p>
+        <p style="margin:0"><a href="mailto:contact@svassure.com">contact@svassure.com</a></p>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>&copy; <span id="yr">2026</span> Shree Vasuda Venture Private Limited. All rights reserved. CIN: U70200MR2026PTC479105</span>
+      <span>SV Assure is not a firm of Chartered Accountants and does not undertake statutory audit, attest functions or certification.</span>
+    </div>
+  </div>
+</footer>
+<script src="/order-report/api-config.js"></script>
+<script>
+(async()=>{
+  const msg=document.getElementById('message'),list=document.getElementById('orders');
+  const fmt=s=>{try{return new Date(s.replace(' ','T')+'Z').toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}catch(e){return s}};
+  try{
+    const r=await window.svaApi('/api/my-orders');const d=await r.json();
+    if(!r.ok)throw Error(d.error||'Please sign in');
+    msg.textContent=d.orders.length?'Showing requisitions linked to your verified email address.':'No requisitions are linked to this email address yet.';
+    for(const o of d.orders){
+      const card=document.createElement('section');card.className='order-item';
+      const left=document.createElement('div');
+      const h=document.createElement('h2');h.textContent=o.reference+' \u2014 '+o.borrower_name;left.appendChild(h);
+      const p=document.createElement('p');p.textContent=o.report_type+' \u00b7 Submitted '+fmt(o.created_at);left.appendChild(p);
+      const right=document.createElement('div');right.style.display='flex';right.style.gap='12px';right.style.alignItems='center';right.style.flexWrap='wrap';
+      const s=document.createElement('span');s.className='pill '+(o.status.split(' ')[0]);s.textContent=o.status;right.appendChild(s);
+      if(o.report_available){const a=document.createElement('a');a.className='btn btn-sm';a.href=(window.SVA_API_BASE||'https://api.svassure.com')+'/api/reports?id='+encodeURIComponent(o.id);a.textContent='Download report';right.appendChild(a)}
+      card.append(left,right);list.appendChild(card);
+    }
+  }catch(e){msg.textContent=e.message+' \u2014 return to the report portal and request a secure sign-in link.'}
+  document.getElementById('signout').onclick=async()=>{try{await window.svaApi('/api/auth/me',{method:'DELETE'})}catch(e){}location.href='/order-report/'};
+})();
+</script>
+<script>
+(function(){
+  var b=document.querySelector('.burger'), n=document.querySelector('nav.main');
+  if(b){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');b.innerHTML=o?'&#10005;':'&#9776;';});}
+  var y=document.getElementById('yr'); if(y){y.textContent=new Date().getFullYear();}
+})();
+</script>
+</body>
+</html>

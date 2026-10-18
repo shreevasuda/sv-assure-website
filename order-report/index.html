@@ -5,73 +5,298 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0B5CA5">
 <title>Order a Report | SV Assure</title>
-<meta name="description" content="Order an MSME due diligence report from SV Assure. For banks, NBFCs and financial institutions.">
-<link rel="icon" href="../assets/mark.png">
-<link rel="stylesheet" href="./portal.css">
+<meta name="description" content="Order a Tier-3 MSME due diligence report from SV Assure. For banks, NBFCs and financial institutions.">
+<link rel="icon" href="/assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/order-report/portal.css">
+<meta name="sv-assure-turnstile-sitekey" content="">
 </head>
 <body>
-<header class="site-header">
-  <a class="brand" href="/" aria-label="SV Assure home"><img src="../assets/logo-h.png" alt="SV Assure"></a>
-  <nav><a href="/">Home</a><a href="/services.html">Services</a><a class="nav-cta" href="/order-report/">Order a Report</a></nav>
+<div class="topbar">
+  <div class="topbar-in">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg><a href="mailto:contact@svassure.com">contact@svassure.com</a></span>
+    <span class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>PAN India operations</span>
+  </div>
+</div>
+<header class="site">
+  <div class="head-in">
+    <a class="brand" href="/"><img src="/assets/logo-h.png" alt="SV Assure &ndash; Due Diligence"></a>
+    <button class="burger" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <nav class="main"><a href="/">Home</a><a href="/about.html">Who We Are</a><a href="/services.html">Services</a><a href="/how-we-work.html">How We Work</a><a href="/institutions.html">For Institutions</a><a href="/contact.html">Contact Us</a><a class="btn btn-gold" href="/order-report/">Order a Report</a></nav>
+  </div>
 </header>
 <main>
-  <section class="intro">
-    <p class="eyebrow">FOR BANKS, NBFCs &amp; FINANCIAL INSTITUTIONS</p>
-    <h1>Order a Due Diligence Report</h1>
-    <p>Choose the most convenient way to place a report request with SV Assure.</p>
-  </section>
-  <section class="options" aria-label="Ordering options">
-    <a class="option featured" href="#order-form">
-      <span class="option-icon" aria-hidden="true">↗</span><span class="option-title">Order Without Login</span>
-      <span class="option-copy">Submit a short requisition. No account is required.</span><span class="option-link">Start requisition →</span>
-    </a>
-    <a class="option" href="#banker-login">
-      <span class="option-icon" aria-hidden="true">✉</span><span class="option-title">Banker Login</span>
-      <span class="option-copy">Sign in by email link to track orders and access reports authorised for you.</span><span class="option-link">Sign in / register →</span>
-    </a>
-    <a class="option" href="https://wa.me/919974165193?text=Hello%20SV%20Assure%2C%20I%20would%20like%20to%20order%20a%20Tier-3%20MSME%20Due%20Diligence%20Report.%20Please%20guide%20me%20on%20the%20details%20required." target="_blank" rel="noopener">
-      <span class="option-icon" aria-hidden="true">◉</span><span class="option-title">Order on WhatsApp</span>
-      <span class="option-copy">Start a conversation with SV Assure using our official WhatsApp number.</span><span class="option-link">Continue on WhatsApp →</span>
-    </a>
-  </section>
-  <section class="form-layout" id="order-form">
-    <div class="form-card">
-      <div class="section-heading"><span class="step">1</span><div><h2>Report requisition</h2><p>Fields marked * are mandatory.</p></div></div>
-      <form id="requisition-form">
-        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <h3>Report required</h3>
-        <label>Report type *<select name="reportType" required><option value="Tier-3 MSME Due Diligence Report">Tier-3 MSME Due Diligence Report</option></select></label>
-        <h3>Borrower details</h3>
-        <div class="fields">
-          <label>Borrower / company name *<input name="borrowerName" required maxlength="200" autocomplete="organization"></label>
-          <label>Borrower mobile number *<input name="borrowerMobile" required inputmode="tel" maxlength="16" placeholder="10-digit mobile number"></label>
-          <label>GSTIN (optional)<input name="gstin" maxlength="15" autocapitalize="characters"></label>
-          <label>Business location (optional)<input name="location" maxlength="180" placeholder="City, State"></label>
-        </div>
-        <h3>Ordering banker</h3>
-        <div class="fields">
-          <label>Your name *<input name="bankerName" required maxlength="120" autocomplete="name"></label>
-          <label>Designation *<input name="designation" required maxlength="120" placeholder="e.g. Branch Manager"></label>
-          <label>Bank / institution *<input name="bankName" required maxlength="160" autocomplete="organization"></label>
-          <label>Branch / office (optional)<input name="branch" maxlength="160"></label>
-          <label>Contact number *<input name="bankerMobile" required inputmode="tel" maxlength="16" autocomplete="tel"></label>
-          <label>Official email *<input name="bankerEmail" type="email" required maxlength="200" autocomplete="email"></label>
-        </div>
-        <label>Additional instructions (optional)<textarea name="remarks" maxlength="1500" rows="3"></textarea></label>
-        <label class="consent"><input type="checkbox" name="consent" required><span>I confirm that the borrower has been informed and has consented to verification of the details submitted for credit-appraisal purposes. *</span></label>
-        <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
-        <button class="button primary" id="submit-button" type="submit">Submit requisition</button>
-        <span class="subtext">No sign-up needed.</span>
-      </form>
-      <div id="success-panel" class="success-panel" hidden><span class="success-mark">✓</span><h2>Requisition received</h2><p>Your reference number is:</p><strong id="reference-number"></strong><p>SV Assure will review your request and contact you. Please retain the reference number.</p><a href="#order-form" class="button secondary" id="new-order">Place another order</a></div>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">For Banks, NBFCs &amp; Financial Institutions</p>
+        <h1>Order a Due Diligence Report</h1>
+        <p>Place your request in two minutes &mdash; online, on WhatsApp, or through your banker login. Our team personally confirms every case with you before work begins.</p>
+      </div>
+      <div class="hero-card">
+        <h3>Every report carries</h3>
+        <ul>
+          <li><b style="color:#fff">Geo-tagged evidence</b> from the point of visit</li>
+          <li><b style="color:#fff">An independent back-check</b> on every field case</li>
+          <li><b style="color:#fff">Supervisor sign-off</b> and a retained working-paper file</li>
+        </ul>
+      </div>
     </div>
-    <aside class="side-card">
-      <h2>What you can expect</h2>
-      <ul><li>Clear case allocation and review</li><li>Verification scope suited to the requisition</li><li>Independent checks and documented findings</li><li>Report in your bank's prescribed format, where agreed</li><li>Private report access for the authorised banker</li></ul>
-      <div class="login-box" id="banker-login"><h3>Ordering regularly?</h3><p>Banker sign-in with a secure email link will let you view your requisitions and access reports authorised for your account.</p><form id="login-form"><label>Official email address<input type="email" name="email" required placeholder="name@bank.com"></label><button class="button secondary" type="submit">Email me a sign-in link</button><p id="login-message" class="form-message" role="status" aria-live="polite"></p></form><p class="subtext">A secure one-time sign-in link will be sent to your official email address.</p></div>
-    </aside>
-  </section>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">Three easy ways</p><h2>Choose how you would like to order</h2></div>
+    <div class="choices">
+      <div class="choice main">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></div>
+        <h3>Order online</h3>
+        <p>Fill a short requisition form. No account or sign-up needed &mdash; you receive a reference number straight away.</p>
+        <a class="btn btn-gold go" href="#order-form">Start requisition</a>
+      </div>
+      <div class="choice wa">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg></div>
+        <h3>Order on WhatsApp</h3>
+        <div class="qr-row">
+          <img src="/order-report/whatsapp-order-qr.svg" width="112" height="112" alt="QR code: scan to start a WhatsApp chat with SV Assure">
+          <span>Scan with your phone camera to open WhatsApp with the message ready. Just add the company name and send.</span>
+        </div>
+        <a class="btn btn-wa go" href="https://wa.me/919974165193?text=Hello%20SV%20Assure%20Team%2C%20I%20want%20to%20order%20a%20Tier-3%20MSME%20Due%20Diligence%20report%20on%20" target="_blank" rel="noopener">Open WhatsApp</a>
+      </div>
+      <div class="choice">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Banker login</h3>
+        <p>Ordering regularly? Sign in with a one-time link sent to your official email to track requisitions and download your reports.</p>
+        <a class="btn btn-outline go" href="#banker-login">Sign in by email link</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wash" id="whats-included">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">What you are ordering</p>
+      <h2>What&rsquo;s in a Tier-3 MSME Due Diligence Report</h2>
+      <p>A full pre-sanction due diligence report for MSME proposals, built from independent portal checks, field visits and third-party confirmations. Every finding is colour-graded and backed by evidence.</p>
+    </div>
+
+    <h3 class="scope-title"><span class="tag std">Standard</span> Included in every report</h3>
+    <div class="scope-grid">
+      <div class="scope-card"><h4>KYC of the entity</h4><p>Company / firm / LLP master data, registration and filings, open charges, PAN, GSTIN, Udyam registration and other statutory identifiers.</p></div>
+      <div class="scope-card"><h4>KYC of every individual</h4><p>All directors, partners, proprietors and guarantors &mdash; identity and DIN status, with group concerns mapped.</p></div>
+      <div class="scope-card"><h4>CERSAI &amp; open charges</h4><p>CERSAI security-interest searches and MCA open-charge search, plus the full risk screening listed below.</p></div>
+      <div class="scope-card"><h4>ITR verification</h4><p>Returns filed, acknowledgements, tax paid and any outstanding demand, for the entity and promoters (with borrower consent).</p></div>
+      <div class="scope-card"><h4>GST verification</h4><p>Registration, filing discipline and GSTR-1 / 3B / 2B reconciliation, with notices and e-invoice sample checks.</p></div>
+      <div class="scope-card"><h4>Sales analysis</h4><p>Books, ITR, GST and bank statements compared over the years, with customer concentration and debtor ageing.</p></div>
+    </div>
+
+    <h3 class="scope-title"><span class="tag std">Standard</span> Risk screening &mdash; safeguards for the credit officer</h3>
+    <div class="screen">
+      <div class="screen-list">
+        <ul class="ticklist two">
+          <li><b>Wilful-defaulter and suit-filed lists</b> checked for the company and every promoter</li>
+          <li><b>Court cases against the borrower and promoters</b> &mdash; e-Courts (district and High Court) and Indian Kanoon</li>
+          <li><b>Insolvency and recovery cases</b> &mdash; NCLT / IBC and DRT / DRAT</li>
+          <li><b>Disqualified directors</b> and director DIN status</li>
+          <li><b>SEBI orders</b> and debarred entities</li>
+          <li><b>Sanctions lists</b> &mdash; UN, MHA and OFAC</li>
+          <li><b>PEP and adverse-media search</b> covering the last five years</li>
+          <li><b>Group concerns and related entities</b> mapped from MCA and GST records</li>
+          <li><b>Statutory dues</b> &mdash; EPFO deposits, tax notices and outstanding demand</li>
+          <li><b>Bank-account conduct</b> over 12 months, with consent</li>
+          <li><b>e-Invoice and e-way-bill sample checks</b> to test whether reported sales are genuine</li>
+          <li><b>MCA open charges</b> and CERSAI searches on the borrower and the assets</li>
+        </ul>
+      </div>
+      <div class="screen-why">
+        <h3>Why credit officers value it</h3>
+        <ul class="ticklist">
+          <li>Every finding is traceable to its source, with date and time</li>
+          <li>A colour grade for each module shows how far the borrower&rsquo;s information was confirmed</li>
+          <li>An observations register flags the points the sanctioning authority should take note of</li>
+          <li>Independent back-check and supervisor sign-off before release</li>
+          <li>The evidence pack is retained, so your file stands up to audit and review</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="scope-title"><span class="tag opt">Optional</span> Added only if your proposal needs it</h3>
+    <div class="scope-grid">
+      <div class="scope-card optional"><h4>Residence visit</h4><p>Geo-tagged visit to the promoters&rsquo; residences.</p></div>
+      <div class="scope-card optional"><h4>Unit visit</h4><p>Unannounced visit to the factory, office or godown with stock estimate and neighbour checks.</p></div>
+      <div class="scope-card optional"><h4>Security visit</h4><p>Visit and verification of the property or asset offered as security.</p></div>
+      <div class="scope-card optional"><h4>Supplier verification</h4><p>Registration, references and premises checks of key suppliers, if opted.</p></div>
+      <div class="scope-card optional"><h4>Cost vetting</h4><p>Independent quotations and project-cost checks, if opted.</p></div>
+    </div>
+
+    <div class="scope-foot">
+      <div>
+        <h3>What you receive</h3>
+        <ul class="ticklist">
+          <li>A single PDF report with a dashboard and colour grade for each module</li>
+          <li>Geo-tagged evidence from field visits and time-stamped portal records</li>
+          <li>The report shared privately and securely with the authorised banker only</li>
+          <li>Reports in your bank&rsquo;s prescribed format, where agreed</li>
+        </ul>
+      </div>
+      <div class="scope-note">
+        <h3>Not sure what you need?</h3>
+        <p>Just place the requisition. You can tick the optional checks you already know about, or leave them blank. <b>Our team will call you to confirm the exact scope</b> before any work begins.</p>
+        <p class="fine" style="margin:0">The report records facts and evidence for your own credit appraisal. It is not an audit, valuation or certificate, and does not recommend sanction or rejection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="order-form">
+  <div class="wrap">
+    <div class="form-layout">
+      <div class="card">
+        <div id="form-panel">
+          <div class="card-head"><span class="n">1</span><div><h2>Report requisition</h2><p>Fields marked <span style="color:var(--danger)">*</span> are mandatory.</p></div></div>
+          <form id="requisition-form" novalidate>
+            <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="group">
+              <h3>Report required</h3>
+              <label class="f">Report type <span class="req">*</span>
+                <select name="reportType" required><option value="Tier-3 MSME Due Diligence Report">Tier-3 MSME Due Diligence Report</option></select>
+              </label>
+              <fieldset class="modules">
+                <legend>Optional checks you already know you need <span class="opt">(leave blank if unsure &mdash; we will confirm the scope with you by phone)</span></legend>
+                <label class="chip"><input type="checkbox" name="modules" value="residence"><span>Residence visit(s)</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="unit"><span>Unit visit</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="security"><span>Security visit</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="supplier"><span>Supplier verification</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="cost"><span>Cost vetting</span></label>
+              </fieldset>
+            </div>
+            <div class="group">
+              <h3>Borrower details</h3>
+              <div class="fields">
+                <label class="f full">Borrower / company name <span class="req">*</span><input name="borrowerName" required maxlength="200" autocomplete="off"></label>
+                <label class="f">Borrower mobile number <span class="req">*</span><input name="borrowerMobile" required inputmode="tel" maxlength="16" placeholder="10-digit mobile number"></label>
+                <label class="f">Business location <span class="opt">(optional)</span><input name="location" maxlength="180" placeholder="City, State"></label>
+                <label class="f">GSTIN <span class="opt">(optional)</span><input name="gstin" maxlength="15" autocapitalize="characters"></label>
+              </div>
+            </div>
+            <div class="group">
+              <h3>Ordering banker</h3>
+              <div class="fields">
+                <label class="f">Your name <span class="req">*</span><input name="bankerName" required maxlength="120" autocomplete="name"></label>
+                <label class="f">Designation <span class="req">*</span><input name="designation" required maxlength="120" placeholder="e.g. Branch Manager"></label>
+                <label class="f">Bank / institution <span class="req">*</span><input name="bankName" required maxlength="160" autocomplete="organization"></label>
+                <label class="f">Branch / office <span class="opt">(optional)</span><input name="branch" maxlength="160"></label>
+                <label class="f">Contact number <span class="req">*</span><input name="bankerMobile" required inputmode="tel" maxlength="16" autocomplete="tel"></label>
+                <label class="f">Official email <span class="req">*</span><input name="bankerEmail" type="email" required maxlength="200" autocomplete="email" placeholder="name@bank.com"></label>
+                <label class="f full">Additional instructions <span class="opt">(optional)</span><textarea name="remarks" maxlength="1500" rows="3"></textarea></label>
+              </div>
+            </div>
+            <div class="confirm-box">
+              <label class="tick"><input type="checkbox" name="consent" required><span>I confirm that the borrower has been informed and has consented to verification of the details submitted for credit-appraisal purposes. <span class="req" style="color:var(--danger)">*</span></span></label>
+              <p class="fine">By submitting this requisition you also confirm that you are authorised to engage SV Assure, on behalf of your institution, to make enquiries and checks on the borrower named above for this requisition.</p>
+            </div>
+            <div id="turnstile-box" class="cf-turnstile"></div>
+            <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+            <div class="submit-row">
+              <button class="btn btn-gold" id="submit-button" type="submit">Submit requisition</button>
+              <span class="subtext">No sign-up needed. We will contact you to confirm.</span>
+            </div>
+          </form>
+        </div>
+        <div id="success-panel" class="success" hidden>
+          <div class="tickmark">&#10003;</div>
+          <h2>Requisition received</h2>
+          <p>Your reference number is</p>
+          <strong class="ref" id="reference-number"></strong>
+          <p>A confirmation has been emailed to you. Our team will contact you shortly to confirm the details. Please keep the reference number handy.</p>
+          <a href="#order-form" class="btn btn-outline" id="new-order">Place another requisition</a>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="card">
+          <h3>What happens next</h3>
+          <ol class="flow">
+            <li><b>You submit</b>You get a reference number instantly.</li>
+            <li><b>We confirm</b>Our team calls or messages you to confirm scope and details.</li>
+            <li><b>We verify</b>Field checks with geo-tagged evidence and an independent back-check.</li>
+            <li><b>You receive</b>The report is shared privately with the authorised banker.</li>
+          </ol>
+        </div>
+        <div class="card login-box" id="banker-login">
+          <h3>Banker login</h3>
+          <p>Enter your official email and we will send a one-time sign-in link. No password to remember.</p>
+          <form id="login-form" novalidate>
+            <label class="f">Official email address<input type="email" name="email" required placeholder="name@bank.com" autocomplete="email"></label>
+            <button class="btn btn-outline" type="submit">Email me a sign-in link</button>
+            <p id="login-message" class="form-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
 </main>
-<footer><img src="../assets/logo-h-white.png" alt="SV Assure"><p>Know Better. Decide Better.</p><span>A Unit of Shree Vasuda Venture Private Limited</span><a href="mailto:contact@svassure.com">contact@svassure.com</a></footer>
-<script src="./api-config.js" defer></script><script src="./portal.js" defer></script>
-</body></html>
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <img class="flogo" src="/assets/logo-h-white.png" alt="SV Assure">
+        <p style="margin:0 0 12px">Know Better. Decide Better.</p>
+        <p style="margin:0">A Unit of Shree Vasuda Venture Private Limited</p>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">Who We Are</a></li>
+          <li><a href="/services.html">Services</a></li>
+          <li><a href="/order-report/">Order a Report</a></li>
+          <li><a href="/how-we-work.html">How We Work</a></li>
+          <li><a href="/institutions.html">For Institutions</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="/services.html#cpv">Contact Point Verification</a></li>
+          <li><a href="/services.html#credit">Credit Due Diligence</a></li>
+          <li><a href="/services.html#transaction">Transaction Due Diligence</a></li>
+          <li><a href="/services.html#supplier">Supplier Due Diligence</a></li>
+          <li><a href="/services.html#tev">TEV Studies</a></li>
+          <li><a href="/services.html#cost">Cost &amp; Asset Verification</a></li>
+          <li><a href="/services.html#stock">Stock, Book-Debt &amp; End-Use Monitoring</a></li>
+          <li><a href="/services.html#process">Process &amp; Controls Reviews</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Head Office</h5>
+        <p style="margin:0 0 14px">2218, Solus Building, Hiranandani Estate,<br>Opp. Bayer House, Thane (W),<br>Mumbai, Maharashtra &ndash; 400 607</p>
+        <p style="margin:0"><a href="mailto:contact@svassure.com">contact@svassure.com</a></p>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>&copy; <span id="yr">2026</span> Shree Vasuda Venture Private Limited. All rights reserved. CIN: U70200MR2026PTC479105</span>
+      <span>SV Assure is not a firm of Chartered Accountants and does not undertake statutory audit, attest functions or certification.</span>
+    </div>
+  </div>
+</footer>
+<script src="/order-report/api-config.js"></script>
+<script src="/order-report/portal.js"></script>
+<script>
+(function(){
+  var b=document.querySelector('.burger'), n=document.querySelector('nav.main');
+  if(b){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');b.innerHTML=o?'&#10005;':'&#9776;';});}
+  var y=document.getElementById('yr'); if(y){y.textContent=new Date().getFullYear();}
+})();
+</script>
+</body>
+</html>
