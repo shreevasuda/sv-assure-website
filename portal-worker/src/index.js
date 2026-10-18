@@ -3,7 +3,8 @@ import { onRequestPost as requestLogin } from "../../functions/api/auth/request.
 import { onRequestPost as verifyLogin } from "../../functions/api/auth/verify.js";
 import { onRequestGet as getAuth, onRequestDelete as deleteAuth } from "../../functions/api/auth/me.js";
 import { onRequestGet as getMyOrders } from "../../functions/api/my-orders.js";
-import { onRequestGet as listOrders, onRequestPatch as updateOrder } from "../../functions/api/admin/orders.js";
+import { onRequestGet as listOrders, onRequestPatch as updateOrder, onRequestPost as logOrder } from "../../functions/api/admin/orders.js";
+import { onRequestGet as orderEvents } from "../../functions/api/admin/events.js";
 import { onRequestGet as exportOrders } from "../../functions/api/admin/export.js";
 import { onRequestGet as downloadReport, onRequestPost as uploadReport } from "../../functions/api/reports.js";
 
@@ -13,11 +14,6 @@ function corsHeaders(origin,env){
  const allowed=allowedOrigin(env);
  if(origin!==allowed)return {};
  return {"Access-Control-Allow-Origin":allowed,"Access-Control-Allow-Credentials":"true","Access-Control-Allow-Methods":"GET, POST, PATCH, DELETE, OPTIONS","Access-Control-Allow-Headers":"Content-Type, X-Admin-Token","Access-Control-Max-Age":"600","Vary":"Origin"};
-}
-function cookieSameSite(response){
- const headers=new Headers(response.headers),cookie=headers.get("Set-Cookie");
- if(cookie)headers.set("Set-Cookie",cookie.replace(/SameSite=Lax/gi,"SameSite=None"));
- return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
 }
 export default {
  async fetch(request,env,ctx){
@@ -34,6 +30,8 @@ export default {
    "GET /api/my-orders":getMyOrders,
    "GET /api/admin/orders":listOrders,
    "PATCH /api/admin/orders":updateOrder,
+   "POST /api/admin/orders":logOrder,
+   "GET /api/admin/events":orderEvents,
    "GET /api/admin/export":exportOrders,
    "GET /api/reports":downloadReport,
    "POST /api/reports":uploadReport
@@ -45,8 +43,7 @@ export default {
   const headers=new Headers(request.headers);headers.delete("Origin");
   const safeRequest=new Request(request,{headers});
   try{
-   let response=await handler({request:safeRequest,env,ctx,params:{},waitUntil:p=>ctx?.waitUntil?.(p),passThroughOnException:()=>{}});
-   response=cookieSameSite(response);
+   const response=await handler({request:safeRequest,env,ctx,params:{},waitUntil:p=>ctx?.waitUntil?.(p),passThroughOnException:()=>{}});
    const outHeaders=new Headers(response.headers);for(const [k,v] of Object.entries(cors))outHeaders.set(k,v);
    return new Response(response.body,{status:response.status,statusText:response.statusText,headers:outHeaders});
   }catch(e){console.error("Portal API router error",e);return json({error:"The service encountered an unexpected error."},500);}

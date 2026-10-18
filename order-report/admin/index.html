@@ -1,1 +1,206 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Admin | SV Assure</title><link rel="stylesheet" href="../portal.css"><style>.wrap{max-width:1180px;margin:auto;padding:24px}.toolbar,.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row{border:1px solid #dbe4ed;border-radius:10px;padding:14px;margin:12px 0;background:white}.row>div{flex:1;min-width:180px}.small{font-size:13px;color:#5d6d7e}input,select{padding:10px;border:1px solid #ccd6e0;border-radius:6px;max-width:100%}#orders{margin-top:18px}.button{cursor:pointer}.danger{color:#9b2525}</style></head><body><header class="site-header"><a class="brand" href="/"><img src="../../assets/logo-h.png" alt="SV Assure"></a><nav><a href="/order-report/">Order a Report</a></nav></header><main class="wrap"><p class="eyebrow">RESTRICTED ADMIN</p><h1>Report requisitions</h1><p class="small">Use only on a trusted device. The admin token is held in this page's memory only and is not saved in browser storage.</p><form id="auth" class="toolbar"><label>Admin token <input id="token" type="password" autocomplete="current-password" required></label><button class="button primary">Open dashboard</button></form><p id="msg" role="status"></p><section id="panel" hidden><div class="toolbar"><input id="q" placeholder="Search reference, borrower, bank, email"><select id="filter"><option value="">All statuses</option><option>New</option><option>Accepted</option><option>In Progress</option><option>Query Raised</option><option>Completed</option><option>Cancelled</option></select><button id="refresh" class="button">Refresh</button><button id="export" class="button">Export CSV</button></div><div id="orders"></div></section></main><script src="../api-config.js"></script><script>(()=>{let token='';const msg=document.getElementById('msg'),panel=document.getElementById('panel'),list=document.getElementById('orders');const statuses=['New','Accepted','In Progress','Query Raised','Completed','Cancelled'];async function api(path,opts={}){opts.headers={...(opts.headers||{}),'X-Admin-Token':token};const r=await fetch(path,opts),d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');return d}async function load(){msg.textContent='Loading…';try{const p=new URLSearchParams();if(document.getElementById('q').value)p.set('q',document.getElementById('q').value);if(document.getElementById('filter').value)p.set('status',document.getElementById('filter').value);const d=await api('/api/admin/orders?'+p);list.replaceChildren();for(const o of d.orders){const card=document.createElement('article');card.className='row';const left=document.createElement('div');const h=document.createElement('h3');h.textContent=o.reference+' · '+o.borrower_name;left.appendChild(h);const detail=document.createElement('p');detail.className='small';detail.textContent=o.bank_name+' / '+o.banker_name+' · '+o.banker_email+' · '+o.created_at;left.appendChild(detail);const contact=document.createElement('p');contact.className='small';contact.textContent='Borrower: '+o.borrower_mobile+' · Banker: '+o.banker_mobile+' · GSTIN: '+(o.gstin||'—')+' · '+(o.location||'');left.appendChild(contact);if(o.remarks){const rem=document.createElement('p');rem.textContent='Notes: '+o.remarks;left.appendChild(rem)}const right=document.createElement('div');const sel=document.createElement('select');statuses.forEach(s=>{const op=document.createElement('option');op.value=s;op.textContent=s;op.selected=s===o.status;sel.appendChild(op)});sel.setAttribute('aria-label','Status for '+o.reference);const save=document.createElement('button');save.className='button';save.textContent='Save status';save.onclick=async()=>{try{await api('/api/admin/orders',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:o.id,status:sel.value})});msg.textContent='Status updated.';await load()}catch(e){msg.textContent=e.message}};right.append(sel,save);const upload=document.createElement('form');upload.className='small';upload.style.marginTop='12px';const file=document.createElement('input');file.type='file';file.accept='application/pdf';file.required=true;file.setAttribute('aria-label','PDF report for '+o.reference);const hidden=document.createElement('input');hidden.type='hidden';hidden.name='orderId';hidden.value=o.id;const up=document.createElement('button');up.className='button';up.textContent=o.report_available?'Replace PDF report':'Upload PDF report';upload.append(hidden,file,up);upload.onsubmit=async e=>{e.preventDefault();const fd=new FormData(upload);try{await api('/api/reports',{method:'POST',body:fd});msg.textContent='Report uploaded privately and order marked Completed.';await load()}catch(err){msg.textContent=err.message}};if(o.report_available){const dl=document.createElement('button');dl.className='button';dl.textContent='Download stored report';dl.onclick=async()=>{try{const r=await window.svaApi('/api/reports?id='+o.id,{headers:{'X-Admin-Token':token}});if(!r.ok){const d=await r.json();throw Error(d.error||'Download failed')}const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=o.reference+'-report.pdf';a.click();URL.revokeObjectURL(a.href)}catch(e){msg.textContent=e.message}};right.appendChild(dl)}right.appendChild(upload);card.append(left,right);list.appendChild(card)}msg.textContent='Loaded '+d.orders.length+' requisition(s).'}catch(e){msg.textContent=e.message;panel.hidden=true}}document.getElementById('auth').onsubmit=async e=>{e.preventDefault();token=document.getElementById('token').value;panel.hidden=false;await load()};document.getElementById('refresh').onclick=load;document.getElementById('export').onclick=async()=>{try{const r=await window.svaApi('/api/admin/export',{headers:{'X-Admin-Token':token}});if(!r.ok){const d=await r.json();throw Error(d.error||'Export failed')}const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sv-assure-requisitions.csv';a.click();URL.revokeObjectURL(a.href)}catch(e){msg.textContent=e.message}};document.getElementById('filter').onchange=load;document.getElementById('q').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();load()}}})();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0B5CA5">
+<title>Admin | SV Assure</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/order-report/portal.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg><a href="mailto:contact@svassure.com">contact@svassure.com</a></span>
+    <span class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>PAN India operations</span>
+  </div>
+</div>
+<header class="site">
+  <div class="head-in">
+    <a class="brand" href="/"><img src="/assets/logo-h.png" alt="SV Assure &ndash; Due Diligence"></a>
+    <button class="burger" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <nav class="main"><a href="/">Home</a><a href="/about.html">Who We Are</a><a href="/services.html">Services</a><a href="/how-we-work.html">How We Work</a><a href="/institutions.html">For Institutions</a><a href="/contact.html">Contact Us</a><a class="btn btn-gold" href="/order-report/">Order a Report</a></nav>
+  </div>
+</header>
+<main>
+<div class="admin-wrap">
+  <p class="eyebrow" style="color:var(--gold-d)">Restricted admin</p>
+  <h1>Report requisitions</h1>
+  <p class="muted" style="font-size:.98rem">Use only on a trusted device. The admin token is held in this page&rsquo;s memory only and is never saved in the browser.</p>
+  <form id="auth" class="toolbar">
+    <input id="token" type="password" autocomplete="current-password" required placeholder="Admin token" aria-label="Admin token">
+    <button class="btn" type="submit">Open dashboard</button>
+  </form>
+  <p id="msg" role="status" class="form-message"></p>
+  <section id="panel" hidden style="padding:0">
+    <details class="logform" id="logform">
+      <summary>+ Log an order received on WhatsApp / phone / email</summary>
+      <form id="log-form" novalidate>
+        <div class="fields">
+          <label class="f">Received by<select name="channel"><option value="whatsapp">WhatsApp</option><option value="phone">Phone call</option><option value="email">Email</option><option value="other">Other</option></select></label>
+          <label class="f">Borrower / company name <span class="req">*</span><input name="borrowerName" required maxlength="200"></label>
+          <label class="f">Borrower mobile <span class="opt">(optional)</span><input name="borrowerMobile" inputmode="tel" maxlength="16"></label>
+          <label class="f">Business location <span class="opt">(optional)</span><input name="location" maxlength="180"></label>
+          <label class="f">Bank / institution<input name="bankName" maxlength="160"></label>
+          <label class="f">Banker name<input name="bankerName" maxlength="120"></label>
+          <label class="f">Banker mobile<input name="bankerMobile" inputmode="tel" maxlength="16"></label>
+          <label class="f">Banker email <span class="opt">(lets them see it after login)</span><input name="bankerEmail" type="email" maxlength="200"></label>
+          <label class="f full">Notes<textarea name="remarks" rows="2" maxlength="1500"></textarea></label>
+        </div>
+        <p style="font-size:.88rem;color:var(--muted)">Authority and borrower consent are not recorded for logged orders &mdash; confirm them with the banker directly and note it above.</p>
+        <button class="btn btn-gold" type="submit">Save and get reference</button>
+      </form>
+    </details>
+    <div class="toolbar">
+      <input id="q" placeholder="Search reference, borrower, bank, email" aria-label="Search">
+      <select id="filter" aria-label="Filter by status"><option value="">All statuses</option><option>New</option><option>Accepted</option><option>In Progress</option><option>Query Raised</option><option>Completed</option><option>Cancelled</option></select>
+      <button id="refresh" class="btn btn-outline btn-sm" type="button">Refresh</button>
+      <button id="export" class="btn btn-outline btn-sm" type="button">Export CSV</button>
+    </div>
+    <div id="orders"></div>
+  </section>
+</div>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <img class="flogo" src="/assets/logo-h-white.png" alt="SV Assure">
+        <p style="margin:0 0 12px">Know Better. Decide Better.</p>
+        <p style="margin:0">A Unit of Shree Vasuda Venture Private Limited</p>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">Who We Are</a></li>
+          <li><a href="/services.html">Services</a></li>
+          <li><a href="/order-report/">Order a Report</a></li>
+          <li><a href="/how-we-work.html">How We Work</a></li>
+          <li><a href="/institutions.html">For Institutions</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="/services.html#cpv">Contact Point Verification</a></li>
+          <li><a href="/services.html#credit">Credit Due Diligence</a></li>
+          <li><a href="/services.html#transaction">Transaction Due Diligence</a></li>
+          <li><a href="/services.html#supplier">Supplier Due Diligence</a></li>
+          <li><a href="/services.html#tev">TEV Studies</a></li>
+          <li><a href="/services.html#cost">Cost &amp; Asset Verification</a></li>
+          <li><a href="/services.html#stock">Stock, Book-Debt &amp; End-Use Monitoring</a></li>
+          <li><a href="/services.html#process">Process &amp; Controls Reviews</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Head Office</h5>
+        <p style="margin:0 0 14px">2218, Solus Building, Hiranandani Estate,<br>Opp. Bayer House, Thane (W),<br>Mumbai, Maharashtra &ndash; 400 607</p>
+        <p style="margin:0"><a href="mailto:contact@svassure.com">contact@svassure.com</a></p>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>&copy; <span id="yr">2026</span> Shree Vasuda Venture Private Limited. All rights reserved. CIN: U70200MR2026PTC479105</span>
+      <span>SV Assure is not a firm of Chartered Accountants and does not undertake statutory audit, attest functions or certification.</span>
+    </div>
+  </div>
+</footer>
+<script src="/order-report/api-config.js"></script>
+<script>
+(()=>{
+let token='';
+const msg=document.getElementById('msg'),panel=document.getElementById('panel'),list=document.getElementById('orders');
+const statuses=['New','Accepted','In Progress','Query Raised','Completed','Cancelled'];
+const fmt=s=>{try{return new Date(String(s).replace(' ','T')+'Z').toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}catch(e){return s}};
+async function api(path,opts={}){
+  opts.headers={...(opts.headers||{}),'X-Admin-Token':token};
+  const r=await window.svaApi(path,opts),d=await r.json();
+  if(!r.ok)throw Error(d.error||'Request failed');return d;
+}
+const el=(tag,props={},...kids)=>{const e=document.createElement(tag);Object.assign(e,props);kids.forEach(k=>e.append(k));return e};
+async function load(){
+  msg.className='form-message';msg.textContent='Loading…';
+  try{
+    const p=new URLSearchParams();
+    if(document.getElementById('q').value)p.set('q',document.getElementById('q').value);
+    if(document.getElementById('filter').value)p.set('status',document.getElementById('filter').value);
+    const d=await api('/api/admin/orders?'+p);
+    list.replaceChildren();
+    for(const o of d.orders)list.appendChild(card(o));
+    msg.className='form-message ok';msg.textContent='Showing '+d.orders.length+' requisition(s).';
+  }catch(e){msg.className='form-message error';msg.textContent=e.message;panel.hidden=true}
+}
+function card(o){
+  const left=el('div');
+  const h=el('h3',{textContent:o.reference+' · '+o.borrower_name});
+  h.appendChild(el('span',{className:'src '+o.source,textContent:o.source}));
+  left.append(h,
+    el('p',{textContent:[o.bank_name,o.banker_name,o.designation].filter(Boolean).join(' / ')+(o.banker_email?' · '+o.banker_email:'')}),
+    el('p',{className:'muted',textContent:'Borrower: '+(o.borrower_mobile||'—')+' · Banker: '+(o.banker_mobile||'—')+' · GSTIN: '+(o.gstin||'—')+' · '+(o.location||'')}),
+    el('p',{className:'muted',textContent:'Received '+fmt(o.created_at)}));
+  if(o.remarks)left.appendChild(el('p',{textContent:'Notes: '+o.remarks}));
+  const act=el('div',{className:'actions'});
+  const sel=el('select',{ariaLabel:'Status for '+o.reference});
+  statuses.forEach(s=>{const op=el('option',{value:s,textContent:s});op.selected=s===o.status;sel.appendChild(op)});
+  const note=el('input',{type:'text',placeholder:'Note (optional)',maxLength:500,ariaLabel:'Status note'});
+  const save=el('button',{className:'btn btn-sm',type:'button',textContent:'Save status'});
+  save.onclick=async()=>{try{await api('/api/admin/orders',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:o.id,status:sel.value,note:note.value})});await load()}catch(e){msg.className='form-message error';msg.textContent=e.message}};
+  act.appendChild(el('div',{className:'row'},sel,note,save));
+  const up=el('form',{className:'row'});
+  const file=el('input',{type:'file',accept:'application/pdf',required:true,ariaLabel:'PDF report for '+o.reference});
+  const hidden=el('input',{type:'hidden',name:'orderId',value:o.id});
+  up.append(file,hidden,el('button',{className:'btn btn-outline btn-sm',textContent:o.report_available?'Replace PDF':'Upload PDF'}));
+  up.onsubmit=async e=>{e.preventDefault();try{await api('/api/reports',{method:'POST',body:new FormData(up)});await load()}catch(err){msg.className='form-message error';msg.textContent=err.message}};
+  act.appendChild(up);
+  const row=el('div',{className:'row'});
+  if(o.report_available){
+    const dl=el('button',{className:'btn btn-outline btn-sm',type:'button',textContent:'Download stored report'});
+    dl.onclick=async()=>{try{const r=await window.svaApi('/api/reports?id='+o.id,{headers:{'X-Admin-Token':token}});if(!r.ok){const d=await r.json();throw Error(d.error||'Download failed')}const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=o.reference+'-report.pdf';a.click();URL.revokeObjectURL(a.href)}catch(e){msg.className='form-message error';msg.textContent=e.message}};
+    row.appendChild(dl);
+  }
+  const trail=el('div',{className:'trail',hidden:true});
+  const hist=el('button',{className:'btn btn-outline btn-sm',type:'button',textContent:'Status trail'});
+  hist.onclick=async()=>{
+    if(!trail.hidden){trail.hidden=true;return}
+    try{
+      const d=await api('/api/admin/events?orderId='+o.id);trail.replaceChildren();
+      if(d.confirmation)trail.appendChild(el('p',{className:'muted',textContent:'Banker confirmed borrower consent and authority on '+fmt(d.confirmation.confirmed_at)+' (wording '+d.confirmation.authority_version+').'}));
+      else trail.appendChild(el('p',{className:'muted',textContent:'No on-form confirmation recorded (order logged by SV Assure).'}));
+      const ol=el('ol');
+      d.events.forEach(ev=>ol.appendChild(el('li',{textContent:fmt(ev.created_at)+' — '+ev.event+(ev.from_status?' ('+ev.from_status+' → '+ev.to_status+')':ev.to_status?' ('+ev.to_status+')':'')+' · '+ev.actor+(ev.note?' · '+ev.note:'')})));
+      trail.appendChild(ol);trail.hidden=false;
+    }catch(e){msg.className='form-message error';msg.textContent=e.message}
+  };
+  row.appendChild(hist);act.appendChild(row);
+  return el('article',{className:'admin-order'},left,act,trail);
+}
+document.getElementById('auth').onsubmit=async e=>{e.preventDefault();token=document.getElementById('token').value;panel.hidden=false;await load()};
+document.getElementById('refresh').onclick=load;
+document.getElementById('filter').onchange=load;
+document.getElementById('q').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();load()}};
+document.getElementById('export').onclick=async()=>{try{const r=await window.svaApi('/api/admin/export',{headers:{'X-Admin-Token':token}});if(!r.ok){const d=await r.json();throw Error(d.error||'Export failed')}const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sv-assure-requisitions.csv';a.click();URL.revokeObjectURL(a.href)}catch(e){msg.className='form-message error';msg.textContent=e.message}};
+document.getElementById('log-form').onsubmit=async e=>{
+  e.preventDefault();const f=e.target;
+  try{
+    const body=Object.fromEntries(new FormData(f).entries());
+    const d=await api('/api/admin/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    f.reset();document.getElementById('logform').open=false;await load();
+    msg.className='form-message ok';msg.textContent='Order logged. Reference: '+d.reference;
+  }catch(err){msg.className='form-message error';msg.textContent=err.message}
+};
+})();
+</script>
+<script>
+(function(){
+  var b=document.querySelector('.burger'), n=document.querySelector('nav.main');
+  if(b){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');b.innerHTML=o?'&#10005;':'&#9776;';});}
+  var y=document.getElementById('yr'); if(y){y.textContent=new Date().getFullYear();}
+})();
+</script>
+</body>
+</html>

@@ -55,3 +55,29 @@ CREATE TABLE IF NOT EXISTS auth_request_log (
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_auth_request_log_email_created ON auth_request_log(email, created_at);
+
+
+-- Phase 1: proof of what the banker confirmed at order time (borrower consent + authority to engage SV Assure).
+CREATE TABLE IF NOT EXISTS order_confirmations (
+    order_id INTEGER PRIMARY KEY,
+    confirmed_at TEXT NOT NULL DEFAULT (datetime('now')),
+    consent_version TEXT NOT NULL,
+    consent_text TEXT NOT NULL,
+    authority_version TEXT NOT NULL,
+    authority_text TEXT NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id)
+);
+
+-- Phase 1: one status trail per order, whichever channel it arrived by (website, whatsapp, phone, email).
+CREATE TABLE IF NOT EXISTS order_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+    event TEXT NOT NULL,
+    from_status TEXT,
+    to_status TEXT,
+    actor TEXT NOT NULL DEFAULT 'system',
+    note TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (order_id) REFERENCES orders(id)
+);
+CREATE INDEX IF NOT EXISTS idx_order_events_order ON order_events(order_id, created_at);

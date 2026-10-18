@@ -1,1 +1,107 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Secure sign-in | SV Assure</title><link rel="stylesheet" href="../portal.css"></head><body><main class="intro" style="max-width:680px;margin:8vh auto;padding:24px"><p class="eyebrow">SV ASSURE REPORT PORTAL</p><h1>Secure sign-in</h1><p id="message" role="status">Verifying your one-time sign-in link…</p><p><a href="/order-report/">Return to the report portal</a></p></main><script src="../api-config.js"></script><script> (async()=>{const m=document.getElementById('message'),token=new URLSearchParams(location.search).get('token');history.replaceState({},'',location.pathname);if(!token){m.textContent='The sign-in link is missing. Please request a new one.';return}try{const r=await window.svaApi('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})}),d=await r.json();if(!r.ok)throw Error(d.error||'Sign-in failed');m.textContent='You are signed in as '+d.email+'. You can now view your requisitions and authorised reports.';const a=document.createElement('a');a.href='/order-report/my-orders/';a.textContent='Open my requisitions';m.appendChild(document.createElement('p')).appendChild(a)}catch(e){m.textContent=e.message||'Sign-in failed. Request a new link.'}})();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0B5CA5">
+<title>Secure sign-in | SV Assure</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/order-report/portal.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg><a href="mailto:contact@svassure.com">contact@svassure.com</a></span>
+    <span class="r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>PAN India operations</span>
+  </div>
+</div>
+<header class="site">
+  <div class="head-in">
+    <a class="brand" href="/"><img src="/assets/logo-h.png" alt="SV Assure &ndash; Due Diligence"></a>
+    <button class="burger" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <nav class="main"><a href="/">Home</a><a href="/about.html">Who We Are</a><a href="/services.html">Services</a><a href="/how-we-work.html">How We Work</a><a href="/institutions.html">For Institutions</a><a href="/contact.html">Contact Us</a><a class="btn btn-gold" href="/order-report/">Order a Report</a></nav>
+  </div>
+</header>
+<main>
+<div class="center-card">
+  <div class="card" style="text-align:center">
+    <p class="eyebrow" style="color:var(--gold-d)">SV Assure Report Portal</p>
+    <h1 style="font-size:2rem">Secure sign-in</h1>
+    <p id="message" role="status">Verifying your one-time sign-in link&hellip;</p>
+    <p id="next"></p>
+    <p style="margin:0"><a href="/order-report/">Back to the report portal</a></p>
+  </div>
+</div>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <img class="flogo" src="/assets/logo-h-white.png" alt="SV Assure">
+        <p style="margin:0 0 12px">Know Better. Decide Better.</p>
+        <p style="margin:0">A Unit of Shree Vasuda Venture Private Limited</p>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">Who We Are</a></li>
+          <li><a href="/services.html">Services</a></li>
+          <li><a href="/order-report/">Order a Report</a></li>
+          <li><a href="/how-we-work.html">How We Work</a></li>
+          <li><a href="/institutions.html">For Institutions</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="/services.html#cpv">Contact Point Verification</a></li>
+          <li><a href="/services.html#credit">Credit Due Diligence</a></li>
+          <li><a href="/services.html#transaction">Transaction Due Diligence</a></li>
+          <li><a href="/services.html#supplier">Supplier Due Diligence</a></li>
+          <li><a href="/services.html#tev">TEV Studies</a></li>
+          <li><a href="/services.html#cost">Cost &amp; Asset Verification</a></li>
+          <li><a href="/services.html#stock">Stock, Book-Debt &amp; End-Use Monitoring</a></li>
+          <li><a href="/services.html#process">Process &amp; Controls Reviews</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Head Office</h5>
+        <p style="margin:0 0 14px">2218, Solus Building, Hiranandani Estate,<br>Opp. Bayer House, Thane (W),<br>Mumbai, Maharashtra &ndash; 400 607</p>
+        <p style="margin:0"><a href="mailto:contact@svassure.com">contact@svassure.com</a></p>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>&copy; <span id="yr">2026</span> Shree Vasuda Venture Private Limited. All rights reserved. CIN: U70200MR2026PTC479105</span>
+      <span>SV Assure is not a firm of Chartered Accountants and does not undertake statutory audit, attest functions or certification.</span>
+    </div>
+  </div>
+</footer>
+<script src="/order-report/api-config.js"></script>
+<script>
+(async()=>{
+  const m=document.getElementById('message'),next=document.getElementById('next'),token=new URLSearchParams(location.search).get('token');
+  history.replaceState({},'',location.pathname);
+  if(!token){m.textContent='The sign-in link is missing. Please request a new one from the report portal.';return}
+  try{
+    const r=await window.svaApi('/api/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})}),d=await r.json();
+    if(!r.ok)throw Error(d.error||'Sign-in failed');
+    m.textContent='You are signed in as '+d.email+'.';
+    const a=document.createElement('a');a.className='btn';a.href='/order-report/my-orders/';a.textContent='Open my requisitions';next.appendChild(a);
+  }catch(e){m.textContent=e.message||'Sign-in failed. Please request a new link.'}
+})();
+</script>
+<script>
+(function(){
+  var b=document.querySelector('.burger'), n=document.querySelector('nav.main');
+  if(b){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');b.innerHTML=o?'&#10005;':'&#9776;';});}
+  var y=document.getElementById('yr'); if(y){y.textContent=new Date().getFullYear();}
+})();
+</script>
+</body>
+</html>
