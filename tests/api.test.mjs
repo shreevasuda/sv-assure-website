@@ -31,7 +31,7 @@ globalThis.fetch=async(url,opts)=>{if(String(url).includes("resend.com"))sent.pu
 const ctx={waitUntil:()=>{}};
 const call=(env,method,path,{body,headers={},raw}={})=>worker.fetch(new Request(API+path,{method,headers:{Origin:SITE,...(body?{"Content-Type":"application/json"}:{}),...headers},body:raw??(body?JSON.stringify(body):undefined)}),env,ctx);
 const ADMIN={"X-Admin-Token":"test-admin-token-not-real"};
-const order=(o={})=>({reportType:"Tier-3 MSME Due Diligence Report",borrowerName:"Test Borrower Pvt Ltd",borrowerMobile:"9000000001",bankerName:"Test Banker",designation:"Branch Manager",bankName:"Test Bank",bankerMobile:"9000000002",bankerEmail:"banker.a@example.test",consent:true,authority:true,...o});
+const order=(o={})=>({reportType:"Tier-3 MSME Due Diligence Report",borrowerName:"Test Borrower Pvt Ltd",borrowerMobile:"9000000001",bankerName:"Test Banker",designation:"Branch Manager",bankName:"Test Bank",bankerMobile:"9000000002",bankerEmail:"banker.a@example.test",consent:true,...o});
 
 test("order is stored with confirmation record, status trail and two emails",async()=>{
  const {env,db}=makeEnv();sent.length=0;
@@ -40,16 +40,25 @@ test("order is stored with confirmation record, status trail and two emails",asy
  const o=db.prepare("SELECT * FROM orders WHERE reference=?").get(reference);
  assert.equal(o.status,"New");assert.equal(o.source,"website");
  const c=db.prepare("SELECT * FROM order_confirmations WHERE order_id=?").get(o.id);
- assert.match(c.authority_text,/authorised to engage SV Assure/);assert.ok(c.confirmed_at);
+ assert.match(c.authority_text,/authorised to engage SV Assure/);assert.equal(c.authority_version,"2026-10-v2");assert.ok(c.confirmed_at);
  assert.equal(db.prepare("SELECT COUNT(*) n FROM order_events WHERE order_id=?").get(o.id).n,1);
  assert.deepEqual(sent.map(m=>m.to[0]).sort(),["banker.a@example.test","contact@svassure.com"]);
 });
-test("order is refused without the authority confirmation, without consent, and on honeypot",async()=>{
+test("order is refused without borrower consent, on honeypot and with bad details",async()=>{
  const {env}=makeEnv();
- assert.equal((await call(env,"POST","/api/orders",{body:order({authority:false})})).status,400);
  assert.equal((await call(env,"POST","/api/orders",{body:order({consent:false})})).status,400);
  assert.equal((await call(env,"POST","/api/orders",{body:order({website:"spam"})})).status,400);
  assert.equal((await call(env,"POST","/api/orders",{body:order({bankerEmail:"not-an-email"})})).status,400);
+});
+test("optional checks are recorded with the order; unknown values are ignored",async()=>{
+ const {env,db}=makeEnv();
+ const r=await call(env,"POST","/api/orders",{body:order({remarks:"Call after 4pm",modules:["unit","cost","unit","<script>"]})});
+ assert.equal(r.status,201);
+ const o=db.prepare("SELECT remarks FROM orders").get();
+ assert.equal(o.remarks,"Optional checks requested: Unit visit, Cost vetting\nCall after 4pm");
+ const r2=await call(env,"POST","/api/orders",{body:order({bankerEmail:"banker.c@example.test"})});
+ assert.equal(r2.status,201);
+ assert.equal(db.prepare("SELECT remarks FROM orders WHERE banker_email='banker.c@example.test'").get().remarks,"");
 });
 test("order from another website origin is rejected",async()=>{
  const {env}=makeEnv();

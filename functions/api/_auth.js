@@ -29,8 +29,9 @@ export async function turnstileOk(request,env,token){
 // Wording versions: bump the version string whenever the on-page wording changes, so each order records exactly what was confirmed.
 export const CONSENT_VERSION="2026-10-v1";
 export const CONSENT_TEXT="I confirm that the borrower has been informed and has consented to verification of the details submitted for credit-appraisal purposes.";
-export const AUTHORITY_VERSION="2026-10-v1";
-export const AUTHORITY_TEXT="I confirm that I am authorised to engage SV Assure, on behalf of my institution, to make enquiries and checks on the borrower named above for this requisition.";
+export const AUTHORITY_VERSION="2026-10-v2";
+export const AUTHORITY_TEXT="By submitting this requisition the banker confirmed being authorised to engage SV Assure, on behalf of their institution, to make enquiries and checks on the borrower named for this requisition.";
+export const MODULES={residence:"Residence visit(s)",unit:"Unit visit",security:"Security visit",supplier:"Supplier verification",cost:"Cost vetting"};
 export const esc=v=>String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 export function newReference(){const d=new Date();return "SVA-"+d.toISOString().slice(2,7).replace("-","")+"-"+crypto.randomUUID().slice(0,6).toUpperCase();}
 export async function sendMail(env,{to,subject,html}){

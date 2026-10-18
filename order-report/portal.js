@@ -18,12 +18,13 @@ form.addEventListener('submit',async e=>{
   e.preventDefault();say(msg,'');
   if(form.elements.website.value)return;
   const d=Object.fromEntries(new FormData(form).entries());
+  d.modules=Array.from(form.querySelectorAll('input[name="modules"]:checked')).map(i=>i.value);
   const need=[['borrowerName','the borrower / company name'],['borrowerMobile','the borrower mobile number'],['bankerName','your name'],['designation','your designation'],['bankName','your bank / institution'],['bankerMobile','your contact number'],['bankerEmail','your official email']];
   for(const [k,label] of need){if(!String(d[k]||'').trim()){say(msg,'Please enter '+label+'.','error');form.elements[k].focus();return}}
   if(!phoneValid(d.borrowerMobile)){say(msg,'Please enter a valid borrower mobile number.','error');form.elements.borrowerMobile.focus();return}
   if(!phoneValid(d.bankerMobile)){say(msg,'Please enter a valid contact number for yourself.','error');form.elements.bankerMobile.focus();return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.bankerEmail)){say(msg,'Please enter a valid official email address.','error');form.elements.bankerEmail.focus();return}
-  if(!d.consent||!d.authority){say(msg,'Please tick both confirmations at the end of the form to submit.','error');return}
+  if(!d.consent){say(msg,'Please tick the borrower-consent confirmation at the end of the form to submit.','error');return}
   if(siteKey&&!tsToken){say(msg,'Please complete the spam check above, then submit again.','error');return}
   d.turnstileToken=tsToken;
   btn.disabled=true;btn.textContent='Submitting…';

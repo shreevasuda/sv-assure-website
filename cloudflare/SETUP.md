@@ -53,7 +53,8 @@ The report portal is deployed as a separate API Worker. The existing static webs
 
 ## Phase 1 changes (October 2026)
 - **New tables** `order_confirmations` and `order_events` are added to `cloudflare/schema.sql` (all `CREATE TABLE IF NOT EXISTS`, so the existing deploy workflow applies them safely and nothing existing is altered).
-- **Orders** now require two ticks: borrower consent and the banker's authority to engage SV Assure. The exact wording and version are stored per order (`order_confirmations`); the wording lives in `functions/api/_auth.js`. Have counsel review it before real use and bump the version string when it changes.
+- **Orders** require the borrower-consent tick; the banker's authority to engage SV Assure is stated in small print and confirmed by submitting the form. The exact wording and version are stored per order (`order_confirmations`); the wording lives in `functions/api/_auth.js`. Have counsel review it before real use and bump the version string when it changes.
+- **Optional checks** (residence / unit / security visit, supplier verification, cost vetting) can be ticked on the form; they are added to the order's notes. Scope is confirmed with the banker by phone.
 - **Status trail**: every order, whichever channel, gets events in `order_events`. Admin can log WhatsApp / phone / email orders (`POST /api/admin/orders`, shown on the admin page) and view the trail (`GET /api/admin/events`).
 - **Emails**: the banker now also gets a confirmation email with the reference.
 - **Spam protection (optional until configured)**: create a Cloudflare Turnstile widget. Put the *site key* (public) in `<meta name="sv-assure-turnstile-sitekey">` in `order-report/index.html` and add the *secret key* as Worker secret `TURNSTILE_SECRET`. Until the secret exists the check is skipped.

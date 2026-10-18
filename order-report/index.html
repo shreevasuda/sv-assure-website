@@ -78,7 +78,53 @@
   </div>
 </section>
 
-<section class="wash" id="order-form">
+<section class="wash" id="whats-included">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">What you are ordering</p>
+      <h2>What&rsquo;s in a Tier-3 MSME Due Diligence Report</h2>
+      <p>A full pre-sanction due diligence report for MSME proposals, built from independent portal checks, field visits and third-party confirmations. Every finding is colour-graded and backed by evidence.</p>
+    </div>
+
+    <h3 class="scope-title"><span class="tag std">Standard</span> Included in every report</h3>
+    <div class="scope-grid">
+      <div class="scope-card"><h4>KYC of the entity</h4><p>Company / firm / LLP master data, registration and filings, open charges, PAN, GSTIN, Udyam registration and other statutory identifiers.</p></div>
+      <div class="scope-card"><h4>KYC of every individual</h4><p>All directors, partners, proprietors and guarantors &mdash; identity and DIN status, with group concerns mapped.</p></div>
+      <div class="scope-card"><h4>Screening &amp; CERSAI</h4><p>CERSAI security-interest search, litigation (e-Courts, NCLT, DRT), wilful-defaulter, sanctions, adverse media and statutory dues such as EPFO.</p></div>
+      <div class="scope-card"><h4>ITR verification</h4><p>Returns filed, acknowledgements, tax paid and any outstanding demand, for the entity and promoters (with borrower consent).</p></div>
+      <div class="scope-card"><h4>GST verification</h4><p>Registration, filing discipline and GSTR-1 / 3B / 2B reconciliation, with notices and e-invoice sample checks.</p></div>
+      <div class="scope-card"><h4>Sales analysis</h4><p>Books, ITR, GST and bank statements compared over the years, with customer concentration and debtor ageing.</p></div>
+    </div>
+
+    <h3 class="scope-title"><span class="tag opt">Optional</span> Added only if your proposal needs it</h3>
+    <div class="scope-grid">
+      <div class="scope-card optional"><h4>Residence visit</h4><p>Geo-tagged visit to the promoters&rsquo; residences.</p></div>
+      <div class="scope-card optional"><h4>Unit visit</h4><p>Unannounced visit to the factory, office or godown with stock estimate and neighbour checks.</p></div>
+      <div class="scope-card optional"><h4>Security visit</h4><p>Visit and verification of the property or asset offered as security.</p></div>
+      <div class="scope-card optional"><h4>Supplier verification</h4><p>Registration, references and premises checks of key suppliers, if opted.</p></div>
+      <div class="scope-card optional"><h4>Cost vetting</h4><p>Independent quotations and project-cost checks, if opted.</p></div>
+    </div>
+
+    <div class="scope-foot">
+      <div>
+        <h3>What you receive</h3>
+        <ul class="ticklist">
+          <li>A single PDF report with a dashboard and colour grade for each module</li>
+          <li>Geo-tagged evidence from field visits and time-stamped portal records</li>
+          <li>An independent back-check and supervisor sign-off on every case</li>
+          <li>An observations register of points for your sanctioning authority</li>
+        </ul>
+      </div>
+      <div class="scope-note">
+        <h3>Not sure what you need?</h3>
+        <p>Just place the requisition. You can tick the optional checks you already know about, or leave them blank. <b>Our team will call you to confirm the exact scope</b> before any work begins.</p>
+        <p class="fine" style="margin:0">The report records facts and evidence for your own credit appraisal. It is not an audit, valuation or certificate, and does not recommend sanction or rejection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="order-form">
   <div class="wrap">
     <div class="form-layout">
       <div class="card">
@@ -91,6 +137,14 @@
               <label class="f">Report type <span class="req">*</span>
                 <select name="reportType" required><option value="Tier-3 MSME Due Diligence Report">Tier-3 MSME Due Diligence Report</option></select>
               </label>
+              <fieldset class="modules">
+                <legend>Optional checks you already know you need <span class="opt">(leave blank if unsure &mdash; we will confirm the scope with you by phone)</span></legend>
+                <label class="chip"><input type="checkbox" name="modules" value="residence"><span>Residence visit(s)</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="unit"><span>Unit visit</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="security"><span>Security visit</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="supplier"><span>Supplier verification</span></label>
+                <label class="chip"><input type="checkbox" name="modules" value="cost"><span>Cost vetting</span></label>
+              </fieldset>
             </div>
             <div class="group">
               <h3>Borrower details</h3>
@@ -115,7 +169,7 @@
             </div>
             <div class="confirm-box">
               <label class="tick"><input type="checkbox" name="consent" required><span>I confirm that the borrower has been informed and has consented to verification of the details submitted for credit-appraisal purposes. <span class="req" style="color:var(--danger)">*</span></span></label>
-              <label class="tick"><input type="checkbox" name="authority" required><span>I confirm that I am authorised to engage SV Assure, on behalf of my institution, to make enquiries and checks on the borrower named above for this requisition. <span class="req" style="color:var(--danger)">*</span></span></label>
+              <p class="fine">By submitting this requisition you also confirm that you are authorised to engage SV Assure, on behalf of your institution, to make enquiries and checks on the borrower named above for this requisition.</p>
             </div>
             <div id="turnstile-box" class="cf-turnstile"></div>
             <p id="form-message" class="form-message" role="status" aria-live="polite"></p>

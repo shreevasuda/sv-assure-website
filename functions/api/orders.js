@@ -1,4 +1,4 @@
-import {json,turnstileOk,CONSENT_VERSION,CONSENT_TEXT,AUTHORITY_VERSION,AUTHORITY_TEXT,esc,newReference,sendMail} from "./_auth.js";
+import {json,turnstileOk,MODULES,CONSENT_VERSION,CONSENT_TEXT,AUTHORITY_VERSION,AUTHORITY_TEXT,esc,newReference,sendMail} from "./_auth.js";
 const clean=(v,max=200)=>String(v||"").trim().slice(0,max);
 const digits=v=>String(v||"").replace(/\D/g,"");
 const validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -28,9 +28,12 @@ export async function onRequestPost({request,env,ctx}){
   if(!f.borrowerName||f.borrowerMobile.length<10||!f.bankerName||!f.designation||!f.bankName||f.bankerMobile.length<10||!validEmail(f.bankerEmail)){
    return json({error:"Please complete all mandatory fields and enter valid mobile numbers and a valid official email."},400);
   }
-  if(!ticked(body.consent)||!ticked(body.authority)){
-   return json({error:"Please tick both confirmations (borrower consent and your authority to engage SV Assure) to submit."},400);
+  if(!ticked(body.consent)){
+   return json({error:"Please tick the borrower-consent confirmation to submit."},400);
   }
+  // Optional checks the banker already knows they want (scope is confirmed by phone). Only known values are accepted.
+  const picked=(Array.isArray(body.modules)?body.modules:[]).filter((m,i,a)=>MODULES[m]&&a.indexOf(m)===i).map(m=>MODULES[m]);
+  if(picked.length)f.remarks=("Optional checks requested: "+picked.join(", ")+(f.remarks?"\n"+f.remarks:"")).slice(0,1500);
   // Light abuse limits that need no extra services: per banker email, and overall.
   const perEmail=await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE banker_email=? AND created_at > datetime('now','-1 hour')").bind(f.bankerEmail).first();
   const overall=await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE source='website' AND created_at > datetime('now','-1 hour')").first();
@@ -48,7 +51,7 @@ export async function onRequestPost({request,env,ctx}){
   ]);
   const rows=Object.entries(f).map(([k,v])=>'<tr><th style="text-align:left;padding:6px 12px;border-bottom:1px solid #ddd">'+esc(k)+'</th><td style="padding:6px 12px;border-bottom:1px solid #ddd">'+esc(v||"—")+'</td></tr>').join("");
   const tasks=[
-   sendMail(env,{to:env.NOTIFY_EMAIL||"contact@svassure.com",subject:"New SV Assure report requisition: "+ref,html:"<h2>New report requisition</h2><p><strong>Reference:</strong> "+esc(ref)+"</p><p>Borrower consent and banker authority confirmed on the form ("+esc(AUTHORITY_VERSION)+").</p><table>"+rows+"</table>"}),
+   sendMail(env,{to:env.NOTIFY_EMAIL||"contact@svassure.com",subject:"New SV Assure report requisition: "+ref,html:"<h2>New report requisition</h2><p><strong>Reference:</strong> "+esc(ref)+"</p><p>Borrower consent confirmed on the form; banker authority confirmed by submitting ("+esc(AUTHORITY_VERSION)+").</p><table>"+rows+"</table>"}),
    sendMail(env,{to:f.bankerEmail,subject:"We received your SV Assure requisition "+ref,html:"<p>Dear "+esc(f.bankerName)+",</p><p>Thank you. SV Assure has received your requisition <strong>"+esc(ref)+"</strong> for <strong>"+esc(f.borrowerName)+"</strong> ("+esc(f.reportType)+").</p><p>Our team will contact you shortly to confirm the details. Please quote the reference in any communication.</p><p>SV Assure &mdash; Know Better. Decide Better.</p>"})
   ];
   if(ctx&&ctx.waitUntil)ctx.waitUntil(Promise.all(tasks));else await Promise.all(tasks);
